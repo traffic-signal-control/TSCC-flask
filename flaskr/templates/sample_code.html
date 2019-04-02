@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  	<link href="static/css/prism.css" rel="stylesheet" />
+    <title>TSCC 2019 &mdash; Traffic Signal Control Competition 2019</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,700,900|Display+Playfair:200,300,400,700"> 
+    <link rel="stylesheet" href="static/fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/magnific-popup.css">
+    <link rel="stylesheet" href="static/css/jquery-ui.css">
+    <link rel="stylesheet" href="static/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="static/css/owl.theme.default.min.css">
+
+    <link rel="stylesheet" href="static/css/bootstrap-datepicker.css">
+
+    <link rel="stylesheet" href="static/fonts/flaticon/font/flaticon.css">
+
+
+
+    <link rel="stylesheet" href="static/css/aos.css">
+
+    <link rel="stylesheet" href="static/css/style.css">
+    
+  </head>
+  <body>
+  	<script src="static/js/prism.js"></script>
+  
+  <div class="site-wrap">
+
+    <div class="site-mobile-menu">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+    
+    <header class="site-navbar py-3" role="banner">
+
+      <div class="container">
+        <div class="row align-items-center">
+          
+          <div class="col-11 col-xl-2">
+            <h1 class="mb-0"><a href="/home" class="text-white h2 mb-0">TSCC 2019</a></h1>
+          </div>
+          <div class="col-12 col-md-10 d-none d-xl-block">
+            <nav class="site-navigation position-relative text-right" role="navigation">
+
+              <ul class="site-menu js-clone-nav mx-auto d-none d-lg-block">
+                <li><a href="/home">Home</a></li>
+                <li class="has-children active"><a>Get Started</a>
+                  <ul class="dropdown">
+                    <li><a href="/problem_definition">Problem Definition</a></li>
+                    <li><a href="/data_description">Data Description</a></li>
+                    <li><a href="/simulator">Simulator</a></li>
+                    <li><a href="/sample_code">Sample Code</a></li>
+                    <li><a href="/evaluation">Evaluation</a></li>
+                  </ul>
+                </li>
+                <li><a href="/rules">Rules</a></li>
+                <li><a href="/submission_guidelines">Submission Guidelines</a></li>
+                <li><a href="/home#timeline">Timeline & Prizes</a></li>
+                <li><a href="/home#sponsors">Sponsors</a></li>
+                <li><a href="/home#contact">Contact</a></li>
+              </ul>
+            </nav>
+          </div>
+
+
+          <div class="d-inline-block d-xl-none ml-md-0 mr-auto py-3" style="position: relative; top: 3px;"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
+
+          </div>
+
+        </div>
+      </div>
+      
+    </header>
+
+  
+
+    <div class="site-blocks-cover overlay" style="background-image: url(static/images/bg-masthead.jpg);" data-aos="fade" data-stellar-background-ratio="0.5">
+      <div class="container">
+        <div class="row align-items-center justify-content-center text-center">
+
+          <div class="col-md-8" data-aos="fade-up" data-aos-delay="400">
+            <h1 class="text-white font-weight-light text-uppercase font-weight-bold">Sample Code</h1>
+            <p class="breadcrumb-custom"><a href="/home">Home</a> <span class="mx-2">&gt;</span> <span>Get Started</span> <span class="mx-2">&gt;</span> <span>Sample Code</span> </p>
+          </div>
+        </div>
+      </div>
+    </div>  
+
+    
+
+    <div class="site-section bg-light">
+      <div class="container" align="left">
+
+        <p>Here we provide a <a href="https://github.com/traffic-signal-control/sample-code">sample code</a> to illustrate how to generate a traffic signal plan through interacting with the simulator. 
+        In the sample code, we implement two baseline methods: Self-organizing traffic light (SOTL) and reinforcement learning. </p>
+
+          <p>You can run SOTL using the following command:</p>
+          <pre><code class="lang-bash">
+python3 run_sotl.py --scenario "hangzhou_bc_tyc_1h_7_8_1848"
+          </code></pre>
+          <p>You can run a basic reinforcement learning code using the following command:</p>
+          <pre><code class="lang-bash">
+python3 run_rl.py --scenario "hangzhou_bc_tyc_1h_7_8_1848"
+          </code></pre>
+
+          <h3 id="1-preliminary">1 Preliminary</h3>
+          <div align="center" class="mb-2"><img src="static/images/intersection.png" alt="intersection" align="center"></div>
+          <div align="center" class="mb-2">Figure 1 Description of the intersection</div>
+          <ul>
+            <li><strong>Road</strong>: For an intersection, there are two kinds of roads: start road and end road. Start road is where a car enters an intersection; end road is where a car leaves an intersection. Figure 1 shows a typical intersection with four start roads and four end roads.</li>
+            <li><strong>Lane</strong>: Each road can be divided into one or multiple lanes, indexed by 0, 1, ... from the inner lane to the outter lane. Lane_id = road<em>id</em>{i}, where i is the lane index.</li>
+            <li><strong>Roadlink (road id - road id)</strong>: A roadlink is defined as the traffic moving from one start road towards another end road. Roadlinks are contained in the list of intersection[&quot;roadLinks&quot;]. Each roadlink is stored in a dictionary like:</li>
+          </ul>
+          <pre><code class="lang-python">
+road_link = {"type":..., "startRoad":..., "endRoad":...,
+                     "direction":..., "laneLinks":...}
+          </code></pre>
+
+          <ul>
+          <li><strong>Lanelink</strong>: A roadlink consists of several lanelinks. The dictionary of lanelink is like:</li>
+          </ul>
+          <pre><code class="lang-python">
+lane_link = {"startLaneIndex":..., "endLaneIndex":..., "points":...}
+          </code></pre>
+          <p>The part of points are the geometric points to define the lane physical positions. &quot;startLaneIndex&quot; means the lane index of the start road while &quot;endLaneIndex&quot; is the lane index of the end road.</p>
+
+          <ul>
+            <li><strong>Signal phase</strong>: A specific combination of roadlinks can form a signal phase.</li>
+          </ul>
+
+
+        <h3 id="2-read-traffic-environment-from-simulator">2 Read traffic environment from simulator</h3>
+
+          <p>In the <a href="https://github.com/traffic-signal-control/sample-code/blob/master/cityflow_env.py">cityflow_env.py</a>, a class of the cityflow environment is provided. There is a function to get the state features of the environment.</p>
+
+
+          <pre><code class="lang-python">
+def get_state(self):
+	state = {
+	# {lane_id: lane_count, ...}
+	state['lane_vehicle_count'] = self.eng.get_lane_vehicle_count() 
+	# {lane_id: lane_waiting_count, ...} 
+	state['lane_waiting_vehicle_count'] = self.eng.get_lane_waiting_vehicle_count()  
+	# {lane_id: [vehicle1_id, vehicle2_id, ...], ...}
+	state['lane_vehicles'] = self.eng.get_lane_vehicles() 
+	# {vehicle_id: vehicle_speed, ...} 
+	state['vehicle_speed'] = self.eng.get_vehicle_speed()  
+	# {vehicle_id: distance, ...}
+	state['vehicle_distance'] = self.eng.get_vehicle_distance() 
+	state['current_time'] = self.eng.get_current_time()
+	state['current_phase'] = self.current_phase
+	state['current_phase_time'] = self.current_phase_time
+	return state
+          </code></pre>
+
+
+          <h3 id="3-calculate-traffic-signal-plans">3 Calculate traffic signal plans</h3>
+
+          <p>As mentioned above, for a control algorithm, the mapping from lanes to a phase is crucial. We obtain the mapping by the function <strong><em>parse_roadnet(roadnetfile)</em></strong> in the <a href="https://github.com/traffic-signal-control/sample-code/blob/master/utility.py">utility.py</a>.</p>
+
+          <p>The first step is to read the roadnet json file into a dictionary with the intersection_id as the key and the details of this intersection as the value.</p>
+
+          <pre><code class="lang-python">
+roadnet = json.load(open(roadnetFile))
+          </code></pre>
+
+          <p>Then we process each intersection respectively. </p>
+          <pre><code class="lang-python">
+lane_phase_info_dict = {}
+for intersection in roadnet["intersections"]:
+    if intersection['virtual']:
+        continue
+    lane_phase_info_dict[intersection['id']] = {
+                        "start_lane": [],
+                        "end_lane": [],
+                        "phase": [],
+                        "phase_startLane_mapping": {},
+                        "phase_roadLink_mapping": {}
+                        }
+          </code></pre>
+
+          <p>For an intersection, we record the mapping in a dictionary. Note that only non-virtual intersections are controlled by the traffic signal.</p>
+
+          <p>You can traverse the list of intersection[&quot;roadLinks&quot;] and then the list of road_link[&quot;laneLinks&quot;] to record the roadLink_lane_pair, showing which lane pairs form a roadlink.</p>
+
+          <pre><code class="lang-python">
+road_links = intersection["roadLinks"]
+start_lane = []
+end_lane = []
+# roadLink includes some lane_pair: (start_lane, end_lane)
+roadLink_lane_pair = {ri: [] for ri in
+                      range(len(road_links))}  
+
+for ri in range(len(road_links)):
+    road_link = road_links[ri]
+    for lane_link in road_link["laneLinks"]:
+        sl = road_link['startRoad'] + "_" + str(lane_link["startLaneIndex"])
+        el = road_link['endRoad'] + "_" + str(lane_link["endLaneIndex"])
+        start_lane.append(sl)
+        end_lane.append(el)
+        roadLink_lane_pair[ri].append((sl, el))
+
+lane_phase_info_dict[intersection['id']]["start_lane"] = sorted(list(set(start_lane)))
+lane_phase_info_dict[intersection['id']]["end_lane"] = sorted(list(set(end_lane)))
+          </code></pre>
+
+          <p>Finally, we can figure out the mapping from lanes to a phase.</p>
+
+          <pre><code class="lang-python">
+for phase_i in range(1, len(intersection["trafficLight"]["lightphases"])):
+    p = intersection["trafficLight"]["lightphases"][phase_i]
+    lane_pair = []
+    start_lane = []
+    for ri in p["availableRoadLinks"]:
+        lane_pair.extend(roadLink_lane_pair[ri])
+        if roadLink_lane_pair[ri][0][0] not in start_lane:
+            start_lane.append(roadLink_lane_pair[ri][0][0])
+    lane_phase_info_dict[intersection['id']]["phase"].append(phase_i)
+    lane_phase_info_dict[intersection['id']]["phase_startLane_mapping"][phase_i] = start_lane
+    lane_phase_info_dict[intersection['id']]["phase_roadLink_mapping"][phase_i] = lane_pair
+          </code></pre>
+
+          <p>The information of phases is stored in the list of intersection[&quot;trafficLight&quot;][&quot;lightphases&quot;] which is listed below. The index of the list represents a phase. Note that the phase #0 is ignored since it serves as the yellow signal and it is not controlled by the algorithm. </p>
+
+          <pre><code class="lang-json">
+"lightphases": [
+  {"time": 5, "availableRoadLinks": []},
+  {"time": 30, "availableRoadLinks": [0, 4]},
+  {"time": 30, "availableRoadLinks": [2, 7]},
+  {"time": 30, "availableRoadLinks": [1, 5]},
+  {"time": 30, "availableRoadLinks": [3, 6]},
+  {"time": 30, "availableRoadLinks": [0, 1]},
+  {"time": 30, "availableRoadLinks": [4, 5]},
+  {"time": 30, "availableRoadLinks": [2, 3]},
+  {"time": 30, "availableRoadLinks": [6, 7]},
+  ]
+          </code></pre>
+
+          <p>Each phase contains a certain number of roadlinks so given available roadlinks, lanes of the phase can be known through roadLink_lane_pair.</p>
+
+        <h4 id="3-1-sotl-method">3.1 SOTL method</h4>
+
+          <p>As for the SOTL(run_sotl.py), it is a simple adaptive method for traffic signal control.</p>
+          <pre><code class="lang-python">
+def choose_action(self, state):
+    cur_phase = state["current_phase"]
+    print("Time: {}, Phase: {}".format(state['current_time'], cur_phase))
+    if state["current_phase_time"] >= self.phi:
+        num_green_vehicle = sum([state["lane_waiting_vehicle_count"][i] for i in self.phase_startLane_mapping[cur_phase]])
+        num_red_vehicle = sum([state["lane_waiting_vehicle_count"][i] for i in self.lane_phase_info[self.intersection_id]["start_lane"]]) - num_green_vehicle
+        if num_green_vehicle <= self.min_green_vehicle and num_red_vehicle > self.max_red_vehicle:
+            self.action = cur_phase % len(self.phase_list) + 1
+    return self.action
+          </code></pre>
+
+          <p>There are some pre-defined parameters, <em>minimum green time</em> phi, <em>minimum waiting vehicles</em> <em>on the lanes with a green signal</em>, and <em>the threshold of waiting vehicles on the lanes with a red signal</em>. When the following three conditions are satisfied, the phase will be set to the next one.
+          (1) the time of current phase exceeds the minimum green time \phi;
+          (2) the number of &quot;green vehicles&quot; is less than the min waiting vehicles on green lanes;
+          (3) the number of &quot;red vehicles&quot; surpasses the threshod of waiting vehicles on red lanes;</p>
+
+
+          <h4 id="3-2-reinforcement-learning-method">3.2 Reinforcement learning method</h4>
+
+          <p>Apart from SOTL, a simple deep q-learning algorithm (<a href="https://github.com/traffic-signal-control/sample-code/blob/master/run_rl.py">run_rl.py</a>) is also provided to calculate traffic signal plan. In this sample code, there are following definitions.</p>
+          <ul>
+          <li>state: number of vehicles on the starting lane, current phase </li>
+          <li>reward:  the total number of waiting vehicles on the starting lane</li>
+          <li>action: set the signal to some phase every 10 seconds</li>
+          <li>model: DQN with 2 hidden layers</li>
+          </ul>
+          <p>The following code segement illustrates these four definitions in the sample code.</p>
+          <pre><code class="lang-python">
+# state definition in run_rl.py
+state = env.get_state()
+state = np.array(list(state['start_lane_vehicle_count'].values()) + [state['current_phase']]) # a sample state definition
+state = np.reshape(state, [1, state_size])
+
+# action definition in run_rl.py
+action = phase_list[agent.choose_action(state)]
+
+# reward defined in CityFlow_env.py
+reward = env.get_reward() 
+'''
+def get_reward():
+   lane_waiting_vehicle_count = self.eng.get_lane_waiting_vehicle_count()
+  reward = -1 * sum(list(lane_waiting_vehicle_count.values())) 
+  return reward
+'''
+
+# model network defined in dqn_agent.py
+model = Sequential()
+model.add(Dense(40, input_dim=self.state_size, activation='relu'))
+model.add(Dense(40, activation='relu'))
+model.add(Dense(self.action_size, activation='linear'))
+          </code></pre>
+
+          <p>Please note that this reinforcement learning algorithm is just for your reference and you may need to redesign more suitable rl algorithm, including network structure, state definition, reward function and so on.</p>
+
+
+      <h3 id="4-feed-one-traffic-signal-to-simulator">4 Feed one traffic signal to simulator</h3>
+      <p>In particular, we recommend that you implement your control method in an agent class as we write in sotl_agent.py and dqn_agent.py. A function of choose_action returns an action indicating the phase to be set in the simulator.</p>
+
+      <p>In cityflow_env.py, the step function in the cityflow_env class controls the simulator to carry out an action. And then the phase is set through the function <strong><em>self.eng.set_tl_phase(<em>*</em></em></strong>self.intersection_id<strong>**</strong>, self.current_phase)<em>*</em>. Two paramters of set_tl_phase are the intersection_id and phase_id.</p>
+
+      <pre><code class="lang-python">
+def step(self, next_phase):
+    if self.current_phase == next_phase:
+        self.current_phase_time += 1
+    else:
+        self.current_phase = next_phase
+        self.current_phase_time = 1
+
+    self.eng.set_tl_phase(self.intersection_id, self.current_phase)
+    self.eng.next_step()
+    self.phase_log.append(self.current_phase)
+      </code></pre>
+
+
+      <h3 id="5-record-your-traffic-signal-plan">5 Record your traffic signal plan</h3>
+      <p>Everytime when you finish controlling, the traffic signal plan can be recorded by runing &#39;env.log()&#39;, like in the &#39;run_sotl.py&#39; and &#39;run_rl.py&#39;. </p>
+
+      <pre><code class="lang-python">
+# defined in CityFlow_env.py
+env.log()
+'''
+def log(self):
+    df = pd.DataFrame({self.intersection_id: self.phase_log[:self.num_step]})
+    if not os.path.exists(self.config['data']):
+        os.makedirs(self.config['data'])
+    df.to_csv(os.path.join(self.config['data'], 'signal_plan.txt'), index=None
+'''
+      </code></pre>
+
+      </div>
+    </div>
+    
+
+
+    
+    
+    <footer class="site-footer" id="contact">
+      <div class="container">
+          <h2 class="text-primary mb-4">Contact us</h2>
+        <div class="row">
+          <div class="col-md-9">
+            <div class="row">
+              <div class="col-md-4">
+                <h3 class="text-primary mb-4"><a href="mailto:intelligent.traffic.signal@gmail.com?subject=Paper%20Recommendation&amp;body=Name%3A%0A%0AInstitution%3A%0A%0AMessage%3A%0A">Email us</a></h3>
+              </div>
+
+              <div class="col-md-4">
+                <h3 class="text-primary mb-4"><a href="https://traffic-signal-control.github.io/">Follow us on github</a></h3>
+              </div>
+
+              <div class="col-md-4">
+                <h3 class="text-primary mb-4"><a href="http://dm.ist.psu.edu/dit2019/">Attend our workshop</a></h3>
+              </div>
+
+            </div>
+          </div>
+   
+        </div>
+        <div class="row pt-5 mt-5 text-center">
+          <div class="col-md-12">
+            <div class="border-top pt-5">
+
+              <p>
+                Website designed by Guanjie Zheng and Yuanhao Xiong.
+              </p>
+
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="static/js/jquery-3.3.1.min.js"></script>
+  <script src="static/js/jquery-migrate-3.0.1.min.js"></script>
+  <script src="static/js/jquery-ui.js"></script>
+  <script src="static/js/popper.min.js"></script>
+  <script src="static/js/bootstrap.min.js"></script>
+  <script src="static/js/owl.carousel.min.js"></script>
+  <script src="static/js/jquery.stellar.min.js"></script>
+  <script src="static/js/jquery.countdown.min.js"></script>
+  <script src="static/js/jquery.magnific-popup.min.js"></script>
+  <script src="static/js/bootstrap-datepicker.min.js"></script>
+  <script src="static/js/aos.js"></script>
+
+  <script src="static/js/main.js"></script>
+    
+  </body>
+</html>

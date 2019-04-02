@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href="static/css/prism.css" rel="stylesheet" />
+
+    <title>TSCC 2019 &mdash; Traffic Signal Control Competition 2019</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,700,900|Display+Playfair:200,300,400,700"> 
+    <link rel="stylesheet" href="static/fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/magnific-popup.css">
+    <link rel="stylesheet" href="static/css/jquery-ui.css">
+    <link rel="stylesheet" href="static/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="static/css/owl.theme.default.min.css">
+
+    <link rel="stylesheet" href="static/css/bootstrap-datepicker.css">
+
+    <link rel="stylesheet" href="static/fonts/flaticon/font/flaticon.css">
+
+
+
+    <link rel="stylesheet" href="static/css/aos.css">
+
+    <link rel="stylesheet" href="static/css/style.css">
+    
+  </head>
+  <body>
+    <script src="static/js/prism.js"></script>
+  
+  <div class="site-wrap">
+
+    <div class="site-mobile-menu">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+    
+    <header class="site-navbar py-3" role="banner">
+
+      <div class="container">
+        <div class="row align-items-center">
+          
+          <div class="col-11 col-xl-2">
+            <h1 class="mb-0"><a href="/home" class="text-white h2 mb-0">TSCC 2019</a></h1>
+          </div>
+          <div class="col-12 col-md-10 d-none d-xl-block">
+            <nav class="site-navigation position-relative text-right" role="navigation">
+
+              <ul class="site-menu js-clone-nav mx-auto d-none d-lg-block">
+                <li><a href="/home">Home</a></li>
+                <li class="has-children active"><a>Get Started</a>
+                  <ul class="dropdown">
+                    <li><a href="/problem_definition">Problem Definition</a></li>
+                    <li><a href="/data_description">Data Description</a></li>
+                    <li><a href="/simulator">Simulator</a></li>
+                    <li><a href="/homesample_code">Sample Code</a></li>
+                    <li><a href="/evaluation">Evaluation</a></li>
+                  </ul>
+                </li>
+                <li><a href="/rules">Rules</a></li>
+                <li><a href="/submission_guidelines">Submission Guidelines</a></li>
+                <li><a href="/home#timeline">Timeline & Prizes</a></li>
+                <li><a href="/home#sponsors">Sponsors</a></li>
+                <li><a href="/home#contact">Contact</a></li>
+              </ul>
+            </nav>
+          </div>
+
+
+          <div class="d-inline-block d-xl-none ml-md-0 mr-auto py-3" style="position: relative; top: 3px;"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
+
+          </div>
+
+        </div>
+      </div>
+      
+    </header>
+
+  
+
+    <div class="site-blocks-cover overlay" style="background-image: url(static/images/bg-masthead.jpg);" data-aos="fade" data-stellar-background-ratio="0.5">
+      <div class="container">
+        <div class="row align-items-center justify-content-center text-center">
+
+          <div class="col-md-8" data-aos="fade-up" data-aos-delay="400">
+            <h1 class="text-white font-weight-light text-uppercase font-weight-bold">Simulator</h1>
+            <p class="breadcrumb-custom"><a href="index.html">Home</a> <span class="mx-2">&gt;</span> <span>Get Started</span> <span class="mx-2">&gt;</span> <span>Simulator</span> </p>
+          </div>
+        </div>
+      </div>
+    </div>  
+
+    
+
+    <div class="site-section bg-light">
+      <div class="container" align="left">
+
+        <p>In this section, we describe how to set up the environment with the simulator and how to run the simulator (<a href="https://cityflow.readthedocs.io/en/latest/index.html">CityFlow</a>) with the given traffic signal plan. </p>
+
+        <h3 id="1-sample-code-download">1 Sample code download</h3>
+        <p>Download the sample code from <a href="https://github.com/traffic-signal-control/sample-code">Github</a>.</p>
+
+        <h3 id="2-environment-setup">2 Environment setup</h3>
+        <p>Docker is used by default to set up the competition environment. Beginners to dockers may need to refer to the <a href="https://docker-curriculum.com/">docker tutorial</a>. </p>
+
+        <h4 id="2-1-set-up-a-docker-environment">2.1 Set up a docker environment</h4>
+        <p>There are two ways to set up the docker environment.</p>
+        <p><strong>Option 1. Use the default docker image.</strong> One basic image has been built in advance, which sets up the environment for CityFlow, Tensorflow and Keras.</p>
+        <p>You can pull this image from DockerHub to your computer by the following command:</p>
+
+        <pre><code class="lang-bash">
+docker pull tscc2050/competition
+docker tag tscc2050/competition competition
+        </code></pre>
+
+        <p>Alternatively, you can download the image from <a href="https://drive.google.com/file/d/1A9Q4Mj2GS6vhizKWHS0DKZkiXeBnn5_9/view?usp=sharing）">Google Drive</a> or 
+        <a href="https://pan.baidu.com/s/1DZkO_rtsWm0hvs4y8y55qw）">Baidu Yun</a> and load this image by:</p>
+        <pre><code class="lang-bash">
+docker load --input competition.tar
+        </code></pre>
+
+        <p><strong>Option 2. Build your own docker image using dockerfile.</strong> The original dockerfile is provided and the images can be built from scratch. The guide to build such an image is as follows. You need to run the following command in ./Docker/ . The dockerfile is placed in the folder of ./Docker/</p>
+        <pre><code class="lang-bash">
+docker build -t competition -f competition.dockerfile --rm context/
+        </code></pre>
+
+        <h4 id="2-2-check-the-environment">2.2 Check the environment</h4>
+        <pre><code class="lang-bash">
+docker run -it --rm -v local_absolute_path:/competition -w /competition competition /bin/bash
+        </code></pre>
+        <p>The command above will build a docker container, where the <strong>local absolute directory</strong> of your project is mounted to a contrainner. If you want to run the code, please remember to start a container and run the code inside the container.</p>
+        <p>When the image is successfully built in the system, you can check whether the environment is set up correctly by the following commands:</p>
+        <pre><code class="lang-bash">
+python3 -c "import engine" # success if no error
+        </code></pre>
+
+
+        <h3 id="3-run-simulator-with-the-default-signal-plan">3 Run simulator with the default signal plan</h3>
+        <p>You can first run the simulator using the default signal plan which is defined in the road network file. The command is:</p>
+        <pre><code class="lang-bash">
+python3 run_default_plan.py --scenario "hangzhou_bc_tyc_1h_7_8_1848"
+        </code></pre>
+        <p>In run_default_plan.py, the main code segment is shown below, where the simulator (Engine) takes road netwrok and traffic data as input and operates the default signal plan.</p>
+        <pre><code class="lang-python">
+args = parse_arguments()
+num_step = args.num_step
+eng = engine.Engine(sim_setting_default["interval"],
+                    sim_setting_default["threadNum"],
+                    sim_setting_default["saveReplay"],
+                    sim_setting_default["rlTrafficLight"],
+                    sim_setting_default["changeLane"])
+roadnetFile = "data/{}/roadnet.json".format(args.scenario)
+flowFile = "data/{}/flow.json".format(args.scenario)
+eng.load_roadnet(roadnetFile)
+eng.load_flow(flowFile)
+
+for step in range(num_step):
+    eng.next_step()
+    eng.get_...()
+    ...
+        </code></pre>
+
+
+        <h3 id="4-run-the-simulator-by-reading-a-signal-plan-from-file">4 Run the simulator by reading a signal plan from file</h3>
+        <p>You can run the simulator by reading a traffic signal plan from the file. The command is:</p>
+        <pre><code class="lang-bash">
+python3 run_signal_plan.py --scenario "hangzhou_bc_tyc_1h_7_8_1848"
+        </code></pre>
+        <p>&quot;hangzhou_bc_tyc_1h_7_8_1848&quot; is a folder name, which includes three files: road network file, traffic flow file, and a traffic signal plan.</p>
+        <p>In the signal plan file, the first row is a header indicating the intersection name, seperated by &#39;\t&#39;. Following that, each line is one second, and each column is the selected phase for that corresponding intersection. A special phase number 0 indicating yellow light when switching from one phase to another. a mandatory 5-second yellow phase (represented ass 0) is applied if and only if when the phase is going to change. A sample signal plan can is as follows:</p>
+        <pre><code class="lang-python">
+intersection_1_1    intersection_1_2
+1   2
+1   2
+0   2
+0   0
+0   0
+0   0
+0   0
+2   0
+...
+        </code></pre>
+        <p>The follwing code segment in &#39;run_signal_plan.py&#39; illustrates how to run a pre-defined signal plan from file. The &#39;rlTrafficLight&#39; must be set &quot;True&quot; to ignore the default signal plan.  </p>
+        <pre><code class="lang-python">
+eng = engine.Engine(sim_setting_control["interval"],
+                    sim_setting_control["threadNum"],
+                    sim_setting_control["saveReplay"],
+                    sim_setting_control["rlTrafficLight"],
+                    sim_setting_control["changeLane"])
+roadnetFile = "data/{}/roadnet.json".format(args.scenario)
+flowFile = "data/{}/flow.json".format(args.scenario)
+planFile = "data/{}/signal_plan_{}.txt".format(args.scenario, args.scenario)
+eng = engine.Engine(sim_setting_control["interval"],
+                    sim_setting_control["threadNum"],
+                    sim_setting_control["saveReplay"],
+                    sim_setting_control["rlTrafficLight"],
+                    sim_setting_control["changeLane"])
+roadnetFile = "data/{}/roadnet.json".format(args.scenario)
+flowFile = "data/{}/flow.json".format(args.scenario)
+planFile = "data/{}/signal_plan.txt".format(args.scenario)
+eng.load_roadnet(roadnetFile)
+eng.load_flow(flowFile)
+plan = pd.read_csv(planFile, sep="\t", header=0, dtype=int)
+intersection_id = plan.columns[0]
+for step in range(num_step):
+    phase = plan.loc[step]
+    eng.set_tl_phase(intersection_id, phase) 
+    eng.next_step()
+    eng.get_...()
+    ...
+        </code></pre>
+
+
+        <h3 id="5-evaluation">5  Evaluation</h3>
+        <p>You can run the following command with a specific scenario to get the evaluation result. The &#39;num_step&#39;, 3600 by default, determines the evaluation time and need be identical to the running time of the signal plan.</p>
+        <pre><code class="lang-bash">
+python3 evaluate.py --scenario "hangzhou_bc_tyc_1h_7_8_1848" --num_step 3600
+        </code></pre>
+        <p>evaluate.py takes the signal plan as the input and outputs a score for the proposed method. </p>
+        <pre><code class="lang-python">
+def main():
+    args = parse_arguments()
+    sim_setting = sim_setting_control
+    sim_setting["num_step"] = args.num_step
+    evaluate_one_traffic(sim_setting, args.scenario)
+        </code></pre>
+
+        <h3 id="next">Next</h3>
+        <p>Learn how to control traffic signal using your own code: 
+          <a href="/sample_code">Traffic Signal Controller Sample Code</a></p>
+
+      </div>
+    </div>
+    
+
+
+    
+    
+    <footer class="site-footer" id="contact">
+      <div class="container">
+          <h2 class="text-primary mb-4">Contact us</h2>
+        <div class="row">
+          <div class="col-md-9">
+            <div class="row">
+              <div class="col-md-4">
+                <h3 class="text-primary mb-4"><a href="mailto:intelligent.traffic.signal@gmail.com?subject=Paper%20Recommendation&amp;body=Name%3A%0A%0AInstitution%3A%0A%0AMessage%3A%0A">Email us</a></h3>
+              </div>
+
+              <div class="col-md-4">
+                <h3 class="text-primary mb-4"><a href="https://traffic-signal-control.github.io/">Follow us on github</a></h3>
+              </div>
+
+              <div class="col-md-4">
+                <h3 class="text-primary mb-4"><a href="http://dm.ist.psu.edu/dit2019/">Attend our workshop</a></h3>
+              </div>
+
+            </div>
+          </div>
+   
+        </div>
+        <div class="row pt-5 mt-5 text-center">
+          <div class="col-md-12">
+            <div class="border-top pt-5">
+
+              <p>
+                Website designed by Guanjie Zheng and Yuanhao Xiong.
+              </p>
+
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="static/js/jquery-3.3.1.min.js"></script>
+  <script src="static/js/jquery-migrate-3.0.1.min.js"></script>
+  <script src="static/js/jquery-ui.js"></script>
+  <script src="static/js/popper.min.js"></script>
+  <script src="static/js/bootstrap.min.js"></script>
+  <script src="static/js/owl.carousel.min.js"></script>
+  <script src="static/js/jquery.stellar.min.js"></script>
+  <script src="static/js/jquery.countdown.min.js"></script>
+  <script src="static/js/jquery.magnific-popup.min.js"></script>
+  <script src="static/js/bootstrap-datepicker.min.js"></script>
+  <script src="static/js/aos.js"></script>
+
+  <script src="static/js/main.js"></script>
+    
+  </body>
+</html>
