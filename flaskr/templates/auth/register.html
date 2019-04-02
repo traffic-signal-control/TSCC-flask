@@ -1,10 +1,28 @@
-{% extends 'base.html' %}
+{% extends 'base_new.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block title_page %}Register{% endblock %}
 
 {% block header %}
-  <h1>{% block title %}Register{% endblock %}</h1>
+  <h1>Register/Log in</h1>
 {% endblock %}
 
+
+
 {% block content %}
+    <nav>
+      <ul>
+        {% if g.user %}
+          <li><span>{{ g.user['username'] }}</span>
+          <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
+        {% else %}
+          <li><a href="{{ url_for('auth.register') }}">Register</a>
+          <li><a href="{{ url_for('auth.login') }}">Log In</a>
+        {% endif %}
+      </ul>
+    </nav>
+
   <form method="post">
     <label for="username">Username</label>
     <input name="username" id="username" required>

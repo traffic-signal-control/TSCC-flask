@@ -1,11 +1,15 @@
-{% extends 'base.html' %}
+{% extends 'base_new.html' %}
+
+{% block title %}New Submission{% endblock %}
+
+{% block title_page %}New Submission{% endblock %}
 
 {% block header %}
-  <h1>{% block title %}New Post{% endblock %}</h1>
+  <h1>New Submission</h1>
 {% endblock %}
 
 {% block content %}
-  <form method="Result">
+  <form method="post">
     <label for="title">Title</label>
     <input name="title" id="title" value="{{ request.form['title'] }}" required>
     <label for="body">Submission (Paste it here)</label>

@@ -67,3 +67,5 @@ def create_app(test_config=None):
     app.register_blueprint(team_info.bp)
 
     return app
+
+app = create_app()

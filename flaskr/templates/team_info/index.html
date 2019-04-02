@@ -1,28 +1,51 @@
-{% extends 'base.html' %}
+{% extends 'base_new.html' %}
+
+{% block title %}Info & Submissions{% endblock %}
+
+{% block title_page %}Info & Submissions{% endblock %}
+
 
 {% block header %}
-  <h1>{% block title %}Submission{% endblock %}</h1>
-  {% if g.user %}
-    <a class="action" href="{{ url_for('team_info.create') }}">New</a>
-  {% endif %}
+    <h3>Personal Info</h3>
+    <li>user_id: {{ returned_info['username'] }}</li>
+    <li>>Password: {{ returned_info['password'] }}</li>
 {% endblock %}
 
 {% block content %}
-  {% for submission in posts %}
-    <article class="post">
-      <header>
-        <div>
-          <h1>{{ submission['result'] }}</h1>
-          <div class="about">by {{ submission['username'] }} on {{ submission['created'].strftime('%Y-%m-%d') }}</div>
-        </div>
-        {% if g.user['id'] == submission['author_id'] %}
-          <a class="action" href="{{ url_for('team_info.update', id=submission['id']) }}">Edit</a>
-        {% endif %}
-      </header>
-      <p class="body">{{ submission['body'] }}</p>
-    </article>
-    {% if not loop.last %}
-      <hr>
-    {% endif %}
-  {% endfor %}
+    <h3>Submission History</h3>
+    <div class="table-responsive" data-example-id="simple-table" style="overflow:scroll;">
+            <table class="table">
+{#              <caption>All methods are measured in <a href="https://traffic-signal-control.github.io/TSCC2019/evaluation.html"> Average Travel Time</a> (in seconds).</caption>#}
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Username</th>
+                  <th>Submission time</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody>
+
+              {% for submission in submissions %}
+                <tr>
+                  <th scope="row">loop.index0</th>
+                  <td> {{ submission['username'] }} </td>
+                  <td>  {{ submission['created'].strftime('%Y-%m-%d %H:%M:%S') }} </td>
+                  <td> {{ submission['result'] }}</td>
+                </tr>
+                  {% if not loop.last %}
+                      <hr>
+                  {% endif %}
+              {% endfor %}
+              </tbody>
+            </table>
+      </div>
+
+    {% if g.user %}
+    <a class="action" href="{{ url_for('team_info.create') }}">New Submission</a>
+  {% endif %}
+
 {% endblock %}
+
+
+
