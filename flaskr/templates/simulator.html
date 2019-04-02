@@ -59,15 +59,25 @@
                     <li><a href="/problem_definition">Problem Definition</a></li>
                     <li><a href="/data_description">Data Description</a></li>
                     <li><a href="/simulator">Simulator</a></li>
-                    <li><a href="/homesample_code">Sample Code</a></li>
+                    <li><a href="/sample_code">Sample Code</a></li>
                     <li><a href="/evaluation">Evaluation</a></li>
+                    <li><a href="/submission_guidelines">Submission Guidelines</a></li>
                   </ul>
                 </li>
                 <li><a href="/rules">Rules</a></li>
-                <li><a href="/submission_guidelines">Submission Guidelines</a></li>
                 <li><a href="/home#timeline">Timeline & Prizes</a></li>
                 <li><a href="/home#sponsors">Sponsors</a></li>
                 <li><a href="/home#contact">Contact</a></li>
+                
+                {% if g.user %}
+                <li class="has-children" align="center"><a>{{ g.user['username'] }}</a>
+                <ul class="dropdown" style="width: 90px">
+                  <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                </ul>
+                {% else %}
+                <li><a href="/auth/register">Register/Log In</a></li>
+                {% endif %}
+                
               </ul>
             </nav>
           </div>
@@ -90,7 +100,7 @@
 
           <div class="col-md-8" data-aos="fade-up" data-aos-delay="400">
             <h1 class="text-white font-weight-light text-uppercase font-weight-bold">Simulator</h1>
-            <p class="breadcrumb-custom"><a href="index.html">Home</a> <span class="mx-2">&gt;</span> <span>Get Started</span> <span class="mx-2">&gt;</span> <span>Simulator</span> </p>
+            <p class="breadcrumb-custom"><a href="/home">Home</a> <span class="mx-2">&gt;</span> <span>Get Started</span> <span class="mx-2">&gt;</span> <span>Simulator</span> </p>
           </div>
         </div>
       </div>
