@@ -10,16 +10,19 @@ bp = Blueprint('team_info', __name__, url_prefix='/team_info')
 
 
 @bp.route('/')
+@login_required
 def all():
     """Show all the posts, most recent first."""
     db = get_db()
-    posts = db.execute(
-        'SELECT sb.id, result, body, created, author_id, username'
-        ' FROM submission sb JOIN user u ON sb.author_id = u.id'
-        ' ORDER BY created DESC'
+    submission = db.execute(
+        'SELECT sb.user_id, result, body, created'
+        ' FROM submission sb'
+        ' JOIN user u ON sb.user_id = u.id AND  sb.user_id = ?'
+        ' ORDER BY created DESC',
+        (g.user['id'],)
     ).fetchall()
     info = get_info()
-    return render_template('team_info/index.html', submissions=posts, returned_info=info)
+    return render_template('team_info/index.html', submissions=enumerate(submission), returned_info=info)
 
 
 @bp.route('/submit', methods=('GET', 'POST'))
@@ -40,7 +43,7 @@ def create():
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO submission (result, body, author_id)'
+                'INSERT INTO submission (result, body, user_id)'
                 ' VALUES (?,?, ?)',
                 (result, body, g.user['id'])
             )

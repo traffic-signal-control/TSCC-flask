@@ -8,7 +8,7 @@
 {% block header %}
     <h3>Personal Info</h3>
     <li>user_id: {{ returned_info['username'] }}</li>
-    <li>>Password: {{ returned_info['password'] }}</li>
+    <li>Password: {{ returned_info['password'] }}</li>
 {% endblock %}
 
 {% block content %}
@@ -26,10 +26,10 @@
               </thead>
               <tbody>
 
-              {% for submission in submissions %}
+              {% for index,submission in submissions %}
                 <tr>
-                  <th scope="row">loop.index0</th>
-                  <td> {{ submission['username'] }} </td>
+                  <th scope="row">{{  index+1 }}</th>
+                  <td> {{ submission['user_id'] }} </td>
                   <td>  {{ submission['created'].strftime('%Y-%m-%d %H:%M:%S') }} </td>
                   <td> {{ submission['result'] }}</td>
                 </tr>
