@@ -5,6 +5,7 @@ from werkzeug.exceptions import abort
 
 from flaskr.auth import login_required, activate_required
 from flaskr.db import get_db
+from flaskr import config
 import sys
 import os
 import time
@@ -15,20 +16,39 @@ UPLOAD_FOLDER = os.path.join("evaluate", "submitted")
 ALLOWED_EXTENSIONS = set(['txt'])
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
 
+scenario_dict = config.scenario_dict
+dataset_dict = config.dataset_dict
+
 @bp.route('/')
 @login_required
 def all():
     """Show all the posts, most recent first."""
     db = get_db()
-    submission = db.execute(
+    submissions = db.execute(
         'SELECT sb.user_id, result, dataset, created'
         ' FROM submission sb'
         ' JOIN user u ON sb.user_id = u.id AND  sb.user_id = ?'
         ' ORDER BY created DESC',
         (g.user['id'],)
     ).fetchall()
+    print(scenario_dict, file=sys.stderr)
+    submission_result_list = []
+    for index, submission in enumerate(submissions):
+        submission_result = dict()
+        submission_result['index'] = index + 1
+        submission_result['scenario'] = scenario_dict[submission['dataset']]
+        if submission['result'] is None:
+            submission_result['result'] = "Calculating.."
+        else:
+            submission_result['result'] = str(submission['result'])
+
+        submission_result['user_id'] = submission['user_id']
+        submission_result['created'] = submission['created']
+
+        submission_result_list.append(submission_result)
+
     info = get_info()
-    return render_template('team_info/index.html', submissions=enumerate(submission), returned_info=info)
+    return render_template('team_info/index.html', submissions=enumerate(submission_result_list), returned_info=info)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -42,15 +62,6 @@ def create():
         dataset = request.form['dataset']
         file = request.files['file']
         error = None
-
-        dataset_dict = {
-            "scenario_1": "hangzhou_bc_tyc_1h_8_9_2231",
-            "scenario_2": "hangzhou_kn_hz_1h_7_8_827",
-            "scenario_3": "hangzhou_bc_tyc_1h_10_11_2021",
-            "scenario_4": "hangzhou_bc_tyc_1h_7_8_1848",
-            "scenario_5": "hangzhou_sb_sx_1h_7_8_1671"
-        }
-
 
         print(dataset, file=sys.stderr)
         print(file.filename)
@@ -79,7 +90,7 @@ def create():
             db.execute(
                 'INSERT INTO submission (user_id, dataset, file_name)'
                 ' VALUES (?,?, ?)',
-                (g.user['id'], dataset, filename)
+                (g.user['id'], dataset_name, filename)
             )
             db.commit()
             return redirect(url_for('team_info.all'))
@@ -102,7 +113,7 @@ def get_info():
     :raise 403: if the current user isn't the author
     """
     post = get_db().execute(
-        'SELECT username, password'
+        'SELECT username, email'
         ' FROM user u WHERE u.id = ?',
         (g.user['id'],)
     ).fetchone()
