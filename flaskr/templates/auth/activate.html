@@ -5,7 +5,7 @@
 {% block title_page %}Register{% endblock %}
 
 {% block header %}
-  <h1>Register/Log in</h1>
+  <h1>Activate</h1>
 {% endblock %}
 
 
@@ -17,8 +17,8 @@
           <li><span>{{ g.user['username'] }}</span>
           <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
         {% else %}
-          <li><a href="{{ url_for('auth.register') }}">Register</a>
-          <li><a href="{{ url_for('auth.login') }}">Log In</a>
+<!--           <li><a href="{{ url_for('auth.register') }}">Register</a>
+          <li><a href="{{ url_for('auth.login') }}">Log In</a> -->
         {% endif %}
       </ul>
     </nav>
@@ -38,30 +38,21 @@
 
 
 
-    <form action = "http://localhost:5000/auth/register_new" method = post>
+        <form method="post">
          <fieldset>
-            
+<!--             <legend>Validate Email</legend> -->
+<!--             <legend>Register Form</legend> -->
             {{ form.hidden_tag() }}
-
             <div style = font-size:20px; font-weight:bold; margin-left:150px;>
-
-
-
-
-               {{ form.name.label }} {{ form.name }}
-               <br>
-               {{ form.password.label }} {{ form.password }}
-               <br>
-              {{ form.email.label }}
-               {{ form.email }}
-               {{ form.submit1 }}
-
-
+              {{ form.validate_code.label }}
+               {{ form.validate_code }}
+              {{ form.submit2 }}
+               
+               
             </div>
 
          </fieldset>
       </form>
-
 
 
 
