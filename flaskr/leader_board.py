@@ -5,9 +5,8 @@ from werkzeug.exceptions import abort
 
 from flaskr.auth import login_required
 from flaskr.db import get_db
-import sys
 
-bp = Blueprint('team_info', __name__, url_prefix='/team_info')
+bp = Blueprint('leaderboard', __name__, url_prefix='/leaderboard')
 
 
 @bp.route('/')
@@ -22,46 +21,12 @@ def all():
         ' ORDER BY created DESC',
         (g.user['id'],)
     ).fetchall()
-    info = get_info()
-    return render_template('team_info/index.html', submissions=enumerate(submission), returned_info=info)
+    info = get_rank()
+    return render_template('leaderboard/index.html', submissions=enumerate(submission), returned_info=info)
 
-
-@bp.route('/submit', methods=('GET', 'POST'))
+@bp.route('/get_rank', methods=('GET', 'POST'))
 @login_required
-def create():
-    """Create a new submission for the current user."""
-    print("====================YES")
-    if request.method == 'POST':
-        result = None
-        result = request.form['title']
-        body = request.form['body']
-        error = None
-
-        print(result, file=sys.stderr)
-
-        if not body:
-            error = 'Submission is required.'
-
-        if error is not None:
-            flash(error)
-        else:
-            db = get_db()
-            db.execute(
-                'INSERT INTO submission (result, body, user_id)'
-                ' VALUES (?,?, ?)',
-                (result, body, g.user['id'])
-            )
-            db.commit()
-            return redirect(url_for('team_info.all'))
-
-
-
-    return render_template('team_info/submit.html')
-
-
-@bp.route('/get_info', methods=('GET', 'POST'))
-@login_required
-def get_info():
+def get_rank():
     """Get the user info by id.
 
     Checks that the id exists and optionally that the current user is

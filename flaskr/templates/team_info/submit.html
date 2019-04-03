@@ -10,10 +10,15 @@
 
 {% block content %}
   <form method="post">
-    <label for="title">Title</label>
-    <input name="title" id="title" value="{{ request.form['title'] }}" required>
-    <label for="body">Submission (Paste it here)</label>
-    <textarea name="body" id="body">{{ request.form['body'] }}</textarea>
+    <label for="dataset">dataset</label>
+      <select name="dataset">
+        <option value="volvo">Volvo</option>
+        <option value="saab">Saab</option>
+        <option value="fiat" selected="selected">Fiat</option>
+        <option value="audi">Audi</option>
+      </select>
+    <label for="file">Submission (Paste it here)</label>
+    <textarea name="file" id="file">{{ request.form['file'] }}</textarea>
     <input type="submit" value="Submit">
   </form>
 {% endblock %}

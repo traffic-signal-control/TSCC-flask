@@ -15,7 +15,8 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
 class EmailForm(Form):
-    email = StringField('Email')
+    email = StringField("Email",[validators.DataRequired("Please enter your email address."),
+                                 validators.Email("Please enter your email address.")])
     submit1 = SubmitField('Send Email')
 
 
