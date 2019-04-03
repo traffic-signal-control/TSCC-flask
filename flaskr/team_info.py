@@ -65,7 +65,7 @@ def create():
         _time = time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime(time.time()))
         filename = None
         if file and allowed_file(file.filename):
-            filename = "signal_plan-"+str(g.user['id']) + "-%s"%_time  + "_%s.txt"%dataset_name
+            filename = "signal_plan-"+str(g.user['id']) + "-%s"%_time  + "-%s.txt"%dataset_name
             if not os.path.exists(UPLOAD_FOLDER):
                 os.makedirs(UPLOAD_FOLDER)
             file.save(os.path.join(UPLOAD_FOLDER, filename))
