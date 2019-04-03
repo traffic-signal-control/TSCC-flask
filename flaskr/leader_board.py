@@ -73,7 +73,7 @@ def get_user_result(user_id):
         ).fetchone()
 
         if submission is None:
-            user_result['dataset_result'][scen_index] = 0
+            user_result['dataset_result'][scen_index] = None
         else:
             user_result['dataset_result'][scen_index] = submission['result']
 
