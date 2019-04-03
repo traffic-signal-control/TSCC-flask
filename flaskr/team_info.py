@@ -11,7 +11,7 @@ import time
 
 bp = Blueprint('team_info', __name__, url_prefix='/team_info')
 
-UPLOAD_FOLDER = os.path.join("uploads", "tmp")
+UPLOAD_FOLDER = os.path.join("evaluate", "submitted")
 ALLOWED_EXTENSIONS = set(['txt'])
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
 
@@ -43,15 +43,29 @@ def create():
         file = request.files['file']
         error = None
 
+        dataset_dict = {
+            "scenario_1": "hangzhou_bc_tyc_1h_8_9_2231",
+            "scenario_2": "hangzhou_kn_hz_1h_7_8_827",
+            "scenario_3": "hangzhou_bc_tyc_1h_10_11_2021",
+            "scenario_4": "hangzhou_bc_tyc_1h_7_8_1848",
+            "scenario_5": "hangzhou_sb_sx_1h_7_8_1671"
+        }
+
+
         print(dataset, file=sys.stderr)
         print(file.filename)
+        dataset_name = None
         if dataset == 'default':
             error = 'Please select one dataset'
+        elif dataset in dataset_dict:
+            dataset_name = dataset_dict[dataset]
+        else:
+            error = 'Please select one dataset'
 
-        _time = time.strftime('%m_%d_%H_%M_%S', time.localtime(time.time()))
+        _time = time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime(time.time()))
         filename = None
         if file and allowed_file(file.filename):
-            filename = str(g.user['id']) + "_" + dataset + "_%s.txt"%_time
+            filename = "signal_plan-"+str(g.user['id']) + "-%s"%_time  + "_%s.txt"%dataset_name
             if not os.path.exists(UPLOAD_FOLDER):
                 os.makedirs(UPLOAD_FOLDER)
             file.save(os.path.join(UPLOAD_FOLDER, filename))

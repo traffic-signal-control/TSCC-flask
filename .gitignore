@@ -1,5 +1,5 @@
 venv/
-uploads/*
+evaluate/*
 
 *.pyc
 __pycache__/
