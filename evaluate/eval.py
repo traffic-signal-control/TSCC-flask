@@ -129,6 +129,7 @@ def evaluate_one_traffic(dic_sim_setting, plan_file_name):
                 score, uid, datetime.datetime.strptime(ts, "%Y_%m_%d_%H_%M_%S"), scenario))
         db.commit()
         db.close()
+        print("write back to database")
     else:
 
         print("planFile is invalid, Rejected!")
