@@ -21,6 +21,8 @@
                   <th>#</th>
                   <th>Username</th>
                   <th>Submission time</th>
+
+                  <th>Dataset</th>
                   <th>Result</th>
                 </tr>
               </thead>
@@ -31,6 +33,7 @@
                   <th scope="row">{{  index+1 }}</th>
                   <td> {{ submission['user_id'] }} </td>
                   <td>  {{ submission['created'].strftime('%Y-%m-%d %H:%M:%S') }} </td>
+                  <td> {{ submission['dataset'] }}</td>
                   <td> {{ submission['result'] }}</td>
                 </tr>
                   {% if not loop.last %}

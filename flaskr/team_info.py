@@ -3,7 +3,7 @@ from flask import (
 )
 from werkzeug.exceptions import abort
 
-from flaskr.auth import login_required
+from flaskr.auth import login_required,activate_required
 from flaskr.db import get_db
 import sys
 
@@ -16,7 +16,7 @@ def all():
     """Show all the posts, most recent first."""
     db = get_db()
     submission = db.execute(
-        'SELECT sb.user_id, result, body, created'
+        'SELECT sb.user_id, result, dataset, created'
         ' FROM submission sb'
         ' JOIN user u ON sb.user_id = u.id AND  sb.user_id = ?'
         ' ORDER BY created DESC',
@@ -27,19 +27,19 @@ def all():
 
 
 @bp.route('/submit', methods=('GET', 'POST'))
-@login_required
+@activate_required
 def create():
     """Create a new submission for the current user."""
-    print("====================YES")
     if request.method == 'POST':
-        result = None
-        result = request.form['title']
-        body = request.form['body']
+        dataset = request.form['dataset']
+        file_name = request.form['file']
         error = None
 
-        print(result, file=sys.stderr)
+        print(dataset, file=sys.stderr)
 
-        if not body:
+        if dataset == 'default':
+            error = 'Please select one dataset'
+        if not file_name:
             error = 'Submission is required.'
 
         if error is not None:
@@ -47,9 +47,9 @@ def create():
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO submission (result, body, user_id)'
+                'INSERT INTO submission (user_id, dataset, file_name)'
                 ' VALUES (?,?, ?)',
-                (result, body, g.user['id'])
+                (g.user['id'], dataset, file_name)
             )
             db.commit()
             return redirect(url_for('team_info.all'))
