@@ -69,6 +69,7 @@
                 {% if g.user %}
                 <li class="has-children" align="center"><a>{{ g.user['username'] }}</a>
                 <ul class="dropdown" style="width: 90px">
+                  <li><a href="{{ url_for('team_info.all') }}">Info</a></li>
                   <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
                 </ul>
                 {% else %}
@@ -113,24 +114,30 @@
           <table>
           <thead>
           <tr>
+          <th style="text-align:center"># </th>
           <th style="text-align:center">Traffic scenarios</th>
           </tr>
           </thead>
           <tbody>
           <tr>
+          <td style="text-align:center">Scenario 1 :</td>
           <td style="text-align:center">hangzhou_bc_tyc_1h_8_9_2231</td>
           </tr>
           <tr>
-          <td style="text-align:center">hangzhou_kn_hz_1h_7_8_827</td>
+          <td style="text-align:center">Scenario 2 :</td>
+          <td>hangzhou_kn_hz_1h_7_8_827</td>
           </tr>
           <tr>
-          <td style="text-align:center">hangzhou_bc_tyc_1h_10_11_2021</td>
+          <td style="text-align:center">Scenario 3 :</td>
+          <td>hangzhou_bc_tyc_1h_10_11_2021</td>
           </tr>
           <tr>
-          <td style="text-align:center">hangzhou_bc_tyc_1h_7_8_1848</td>
+          <td style="text-align:center">Scenario 4 :</td>
+          <td>hangzhou_bc_tyc_1h_7_8_1848</td>
           </tr>
           <tr>
-          <td style="text-align:center">hangzhou_sb_sx_1h_7_8_1671</td>
+          <td style="text-align:center">Scenario 5 :</td>
+          <td>hangzhou_sb_sx_1h_7_8_1671</td>
           </tr>
           </tbody>
           </table>
