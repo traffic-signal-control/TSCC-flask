@@ -2,10 +2,8 @@ import sys
 sys.path.insert(0,'.')
 
 import engine
-import json
 import os
 import pandas as pd
-import numpy as np
 import shutil
 from sim_setting import sim_setting_control
 from multiprocessing import Process
@@ -121,11 +119,11 @@ def evaluate_one_traffic(dic_sim_setting, plan_file_name):
         print("====================== score ======================")
         with open(outFile, "w") as f:
             f.write(str(score))
+        # todo - write score back to the database
+
     else:
 
         print("planFile is invalid, Rejected!")
-
-    # write score back to the database
 
 
 
