@@ -77,6 +77,9 @@ def create_app(test_config=None):
     from . import team_info
     app.register_blueprint(team_info.bp)
 
+    from . import leader_board
+    app.register_blueprint(leader_board.bp)
+
     return app
 
 app = create_app()

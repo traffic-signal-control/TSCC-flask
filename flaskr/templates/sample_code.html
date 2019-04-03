@@ -73,6 +73,7 @@
                 <li class="has-children" align="center"><a>{{ g.user['username'] }}</a>
                 <ul class="dropdown" style="width: 90px">
                   <li><a href="{{ url_for('team_info.all') }}">Info</a></li>
+                  <li><a href="{{ url_for('leaderboard.all') }}">Leaderboard</a></li>
                   <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
                 </ul>
                 {% else %}

@@ -7,3 +7,10 @@ dataset_dict = {
         }
 
 scenario_dict = dict([(v, k) for k, v in dataset_dict.items()])
+
+
+user_result = {}
+user_result['user_id'] = None
+user_result['username'] = None
+user_result['final_result'] = None
+user_result['dataset_result'] = dict([(k, None) for k, v in dataset_dict.items()])
