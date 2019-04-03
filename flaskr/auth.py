@@ -1,4 +1,5 @@
 import functools
+import sys
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
@@ -6,8 +7,48 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from flaskr.db import get_db
+from flask_wtf import Form
+from wtforms import StringField,SubmitField,PasswordField
+from wtforms import validators
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+
+
+class EmailForm(Form):
+    email = StringField('Email')
+    submit1 = SubmitField('Send Email')
+
+
+class RegisterForm(Form):
+    name = StringField('Username',[validators.DataRequired("Please enter your user name")])
+    password = PasswordField('Password')
+    email = StringField("Email",[validators.DataRequired("Please enter your email address."),
+                                 validators.Email("Please enter your email address.")])
+    validate_code = StringField('Validate_code', [validators.DataRequired("Please enter your validation code")])
+    submit2 = SubmitField('Submit')
+
+
+@bp.route('/register_new', methods=('GET', 'POST'))
+def register_new():
+    form1 = EmailForm()
+    form2 = RegisterForm()
+
+    if request.method == 'POST':
+
+        if form1.submit1.data and form1.validate_on_submit():
+            print(form1.email.data, file=sys.stderr)
+        if form2.submit2.data and form2.validate_on_submit():
+            print(form2.name.data, file=sys.stderr)
+            print(form2.password.data, file=sys.stderr)
+            print(form2.email.data, file=sys.stderr)
+            print(form2.validate_code.data, file=sys.stderr)
+
+
+        #return render_template('auth/register_new.html', form1=form1, form2=form2)
+
+    return render_template('auth/register_new.html', form1=form1, form2=form2)
+
+
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():

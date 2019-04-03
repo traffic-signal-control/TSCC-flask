@@ -1,0 +1,78 @@
+{% extends 'base_new.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block title_page %}Register{% endblock %}
+
+{% block header %}
+  <h1>Register/Log in</h1>
+{% endblock %}
+
+
+
+{% block content %}
+    <nav>
+      <ul>
+        {% if g.user %}
+          <li><span>{{ g.user['username'] }}</span>
+          <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
+        {% else %}
+          <li><a href="{{ url_for('auth.register') }}">Register</a>
+          <li><a href="{{ url_for('auth.login') }}">Log In</a>
+        {% endif %}
+      </ul>
+    </nav>
+{#  <form method="post">#}
+{#    <label for="username">Username</label>#}
+{#    <input name="username" id="username" required>#}
+{#    <label for="password">Password</label>#}
+{#    <input type="password" name="password" id="password" required>#}
+{##}
+{#    <label for="email">Email</label>#}
+{#    <input type="email" name="email" id="email" required>#}
+{#    <input type="submit" value="Send Email">#}
+{##}
+{#    <input type="submit" value="Register">#}
+{#  </form>#}
+
+
+        <form action = "http://localhost:5000/auth/register_new" method = post>
+         <fieldset>
+            <legend>Validate Email</legend>
+            {{ form1.hidden_tag() }}
+            <div style = font-size:20px; font-weight:bold; margin-left:150px;>
+               {{ form1.email.label }}
+               {{ form1.email }}
+               {{ form1.submit1 }}
+            </div>
+
+         </fieldset>
+      </form>
+
+    <form action = "http://localhost:5000/auth/register_new" method = post>
+         <fieldset>
+            <legend>Register Form</legend>
+            {{ form2.hidden_tag() }}
+
+            <div style = font-size:20px; font-weight:bold; margin-left:150px;>
+
+               {{ form2.email.label }}
+               {{ form1.email}}
+               {{ form2.validate_code.label }}
+               {{ form2.validate_code }}
+               <br>
+
+               {{ form2.name.label }} {{ form2.name }}
+               <br>
+               {{ form2.password.label }} {{ form2.password }}
+               <br>
+
+               {{ form2.submit2 }}
+            </div>
+
+         </fieldset>
+      </form>
+
+
+
+{% endblock %}

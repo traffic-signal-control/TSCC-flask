@@ -50,6 +50,8 @@ def create():
             db.commit()
             return redirect(url_for('team_info.all'))
 
+
+
     return render_template('team_info/submit.html')
 
 
