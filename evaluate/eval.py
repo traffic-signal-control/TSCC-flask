@@ -9,6 +9,8 @@ from sim_setting import sim_setting_control
 from multiprocessing import Process
 import time
 import gc
+import sqlite3
+import datetime
 
 baseline_tt = {
     "hangzhou_bc_tyc_1h_10_11_2021": 479.19,
@@ -99,7 +101,7 @@ def main():
 def evaluate_one_traffic(dic_sim_setting, plan_file_name):
 
     # extract scenario
-    _, user_id, ts, scenario_txt = plan_file_name.split('-')
+    _, uid, ts, scenario_txt = plan_file_name.split('-')
     scenario = scenario_txt[:-4] # remove ".txt"
     roadnetFile = "data/{}/roadnet.json".format(scenario)
     flowFile = "data/{}/flow.json".format(scenario)
@@ -120,7 +122,14 @@ def evaluate_one_traffic(dic_sim_setting, plan_file_name):
         with open(outFile, "w") as f:
             f.write(str(score))
         # todo - write score back to the database
-
+        db = sqlite3.connect("../instance/flaskr.sqlite", detect_types=sqlite3.PARSE_DECLTYPES)
+        cur = db.cursor()
+        cur.execute(
+            "update submission set result = {0} where (user_id='{1}' and created='{2}' and dataset='{3}' )".format(
+                score, uid, datetime.datetime.strptime(ts, "%Y_%m_%d_%H_%M_%S"), scenario))
+        db.commit()
+        db.close()
+        print("write back to database")
     else:
 
         print("planFile is invalid, Rejected!")
