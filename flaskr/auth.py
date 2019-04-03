@@ -8,7 +8,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from flaskr.db import get_db
 from flask_wtf import FlaskForm
-from wtforms import StringField,SubmitField,PasswordField
+from wtforms import StringField, SubmitField, PasswordField
 from wtforms import validators
 from flask_mail import Mail
 from flask_mail import Message
@@ -49,6 +49,20 @@ class CodeForm(FlaskForm):
 
     validate_code = StringField('Code', [validators.DataRequired("Please enter your validation code")])
     submit2 = SubmitField('Register')
+
+class UploadForm(FlaskForm):
+    """用户上传文件的表单"""
+    '''
+    file1 = FileField(
+        label="Scenario 1 signal plan:",
+        validators=[
+            # 文件必须选择;
+            FileRequired(),
+            # 指定文件上传的格式;
+            FileAllowed(['txt'], 'only .txt')
+        ]
+    )
+    '''
 
 
 @bp.route('/register', methods=('GET', 'POST'))

@@ -1,14 +1,19 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, send_from_directory
 )
 from werkzeug.exceptions import abort
 
-from flaskr.auth import login_required,activate_required
+from flaskr.auth import login_required, activate_required
 from flaskr.db import get_db
 import sys
+import os
+import time
 
 bp = Blueprint('team_info', __name__, url_prefix='/team_info')
 
+UPLOAD_FOLDER = os.path.join("flaskr", "uploads", "tmp")
+ALLOWED_EXTENSIONS = set(['txt'])
+MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
 
 @bp.route('/')
 @login_required
@@ -25,6 +30,9 @@ def all():
     info = get_info()
     return render_template('team_info/index.html', submissions=enumerate(submission), returned_info=info)
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 @bp.route('/submit', methods=('GET', 'POST'))
 @activate_required
@@ -32,15 +40,23 @@ def create():
     """Create a new submission for the current user."""
     if request.method == 'POST':
         dataset = request.form['dataset']
-        file_name = request.form['file']
+        file = request.files['file']
         error = None
 
         print(dataset, file=sys.stderr)
-
+        print(file.filename)
         if dataset == 'default':
             error = 'Please select one dataset'
-        if not file_name:
-            error = 'Submission is required.'
+
+        _time = time.strftime('%m_%d_%H_%M_%S', time.localtime(time.time()))
+        filename = None
+        if file and allowed_file(file.filename):
+            filename = str(g.user['id']) + "_" + dataset + "_%s.txt"%_time
+            if not os.path.exists(UPLOAD_FOLDER):
+                os.makedirs(UPLOAD_FOLDER)
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
+        else:
+            error = 'Signal plan is required and the file name must have a ".txt" extension'
 
         if error is not None:
             flash(error)
@@ -49,12 +65,10 @@ def create():
             db.execute(
                 'INSERT INTO submission (user_id, dataset, file_name)'
                 ' VALUES (?,?, ?)',
-                (g.user['id'], dataset, file_name)
+                (g.user['id'], dataset, filename)
             )
             db.commit()
             return redirect(url_for('team_info.all'))
-
-
 
     return render_template('team_info/submit.html')
 

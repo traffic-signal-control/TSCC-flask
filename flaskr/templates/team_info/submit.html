@@ -9,16 +9,17 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <label for="dataset">dataset</label>
+  <form method="post" enctype=multipart/form-data>
+    <label for="dataset">dataset </label>
       <select name="dataset">
         <option value="default" selected="selected">--</option>
-        <option value="volvo">Volvo</option>
-        <option value="saab">Saab</option>
-        <option value="audi">Audi</option>
+        <option value="scenario_1">scenario_1</option>
+        <option value="scenario_2">scenario_2</option>
+        <option value="scenario_3">scenario_3</option>
       </select>
-    <label for="file">Submission (Paste it here)</label>
-    <textarea name="file" id="file">{{ request.form['file'] }}</textarea>
-    <input type="submit" value="Submit">
+    {#  <label for="file">Submission (Paste it here)</label> #}
+    {# <textarea name="file" id="file">{{ request.form['file'] }}</textarea> #}
+      <input type="file" name="file">
+    <input type="submit" value="Upload">
   </form>
 {% endblock %}
