@@ -1,5 +1,5 @@
 venv/
-flaskr/uploads/*
+uploads/*
 
 *.pyc
 __pycache__/

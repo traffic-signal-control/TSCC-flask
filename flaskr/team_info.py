@@ -11,7 +11,7 @@ import time
 
 bp = Blueprint('team_info', __name__, url_prefix='/team_info')
 
-UPLOAD_FOLDER = os.path.join("flaskr", "uploads", "tmp")
+UPLOAD_FOLDER = os.path.join("uploads", "tmp")
 ALLOWED_EXTENSIONS = set(['txt'])
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
 
