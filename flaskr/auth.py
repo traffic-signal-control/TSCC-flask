@@ -2,82 +2,139 @@ import functools
 import sys
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from flaskr.db import get_db
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField,SubmitField,PasswordField
 from wtforms import validators
+from flask_mail import Mail
+from flask_mail import Message
+from threading import Thread
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
+# 异步发送邮件
+def async_send_mail(app, msg, mail):
+    # 必须在程序上下文中才能发送邮件，新建的线程没有，因此需要手动创建
+    with app.app_context():
+        # 发送邮件
+        mail.send(msg)
 
-class EmailForm(Form):
-    email = StringField('Email')
+
+def send_mail(to, subject, **kwargs):
+    # 获取原始的app实例
+    app = current_app._get_current_object()
+    mail = Mail(app)
+    # 创建邮件对象
+    msg = Message(subject, recipients=[to], sender=app.config['MAIL_USERNAME'])
+    msg.body = "dfsadasd"
+    msg.html = "<b>testsdsding</b>"
+    thr = Thread(target=async_send_mail, args=[app, msg, mail])
+    thr.start()
+    return thr
+
+
+class UserForm(FlaskForm):
+    email = StringField('Email',[validators.Email("Please enter your email address.")])
+    name = StringField('Username',[validators.DataRequired("Please enter your user name")])
+    password = PasswordField('Password')
     submit1 = SubmitField('Send Email')
 
 
-class RegisterForm(Form):
-    name = StringField('Username',[validators.DataRequired("Please enter your user name")])
-    password = PasswordField('Password')
-    email = StringField("Email",[validators.DataRequired("Please enter your email address."),
-                                 validators.Email("Please enter your email address.")])
-    validate_code = StringField('Validate_code', [validators.DataRequired("Please enter your validation code")])
-    submit2 = SubmitField('Submit')
+class CodeForm(FlaskForm):
 
-
-@bp.route('/register_new', methods=('GET', 'POST'))
-def register_new():
-    form1 = EmailForm()
-    form2 = RegisterForm()
-
-    if request.method == 'POST':
-
-        if form1.submit1.data and form1.validate_on_submit():
-            print(form1.email.data, file=sys.stderr)
-        if form2.submit2.data and form2.validate_on_submit():
-            print(form2.name.data, file=sys.stderr)
-            print(form2.password.data, file=sys.stderr)
-            print(form2.email.data, file=sys.stderr)
-            print(form2.validate_code.data, file=sys.stderr)
-
-
-        #return render_template('auth/register_new.html', form1=form1, form2=form2)
-
-    return render_template('auth/register_new.html', form1=form1, form2=form2)
-
+    validate_code = StringField('Code', [validators.DataRequired("Please enter your validation code")])
+    submit2 = SubmitField('Register')
 
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
+
+    form = UserForm()
+    
+
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
         db = get_db()
-        error = None
-
-        if not username:
-            error = 'Username is required.'
-        elif not password:
-            error = 'Password is required.'
-        elif db.execute(
-            'SELECT id FROM user WHERE username = ?', (username,)
-        ).fetchone() is not None:
-            error = 'User {} is already registered.'.format(username)
-
-        if error is None:
+        if form.submit1.data and form.validate_on_submit():
+            username = form.name.data
+            password = form.password.data
+            email = form.email.data
+            print(username, file=sys.stderr)
+            print(password, file=sys.stderr)
+            print(email, file=sys.stderr)
+            send_mail(email, "aaaaaaaaaaa")
             db.execute(
-                'INSERT INTO user (username, password) VALUES (?, ?)',
-                (username, generate_password_hash(password))
+                'INSERT INTO user (username, password, email, code) VALUES (?, ?, ?, ?)',
+                (username, generate_password_hash(password), email, 'xxx')
             )
             db.commit()
-            return redirect(url_for('auth.login'))
+            session['name'] = form.name.data
+            flash('注册成功，请移步至邮箱查看验证码激活')
+            return redirect(url_for('auth.activate'))
+        # if form2.submit2.data and form2.validate_on_submit():
 
-        flash(error)
+        #     # print(form2.email.data, file=sys.stderr)
+        #     print(form2.validate_code.data, file=sys.stderr)
 
-    return render_template('auth/register.html')
+
+        #return render_template('auth/register_new.html', form1=form1, form2=form2)
+
+    return render_template('auth/register.html', form=form)
+
+@bp.route('/activate', methods=('GET', 'POST'))
+def activate():
+    form = CodeForm()
+    if request.method == 'POST':
+        if form.submit2.data and form.validate_on_submit():
+            db = get_db()
+            username = session['name']
+            code = form.validate_code.data
+            print(username, file=sys.stderr)
+            print(code, file=sys.stderr)
+            user = db.execute(
+            'SELECT * FROM user WHERE username = ?', (username,)
+        ).fetchone()
+            error = None
+            if error is None:
+                return redirect(url_for('auth.login'))
+
+    return render_template('auth/activate.html', form=form)
+
+
+
+# @bp.route('/register', methods=('GET', 'POST'))
+# def register():
+#     if request.method == 'POST':
+#         username = request.form['username']
+#         password = request.form['password']
+#         db = get_db()
+#         error = None
+
+#         if not username:
+#             error = 'Username is required.'
+#         elif not password:
+#             error = 'Password is required.'
+#         elif db.execute(
+#             'SELECT id FROM user WHERE username = ?', (username,)
+#         ).fetchone() is not None:
+#             error = 'User {} is already registered.'.format(username)
+
+#         if error is None:
+#             db.execute(
+#                 'INSERT INTO user (username, password) VALUES (?, ?)',
+#                 (username, generate_password_hash(password))
+#             )
+#             db.commit()
+#             return redirect(url_for('auth.login'))
+
+#         flash(error)
+
+#     return render_template('auth/register.html')
+
+
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():

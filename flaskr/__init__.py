@@ -10,6 +10,13 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
+    app.config['MAIL_SERVER'] = 'smtp.live.com'
+    app.config['MAIL_PORT'] = 25
+    app.config['MAIL_USE_SSL'] = False
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USERNAME'] = 'trafficsignalcontrol@hotmail.com'
+    app.config['MAIL_PASSWORD'] = 'tsc123456'
+    app.config['MAIL_DEBUG'] = True
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
