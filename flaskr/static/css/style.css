@@ -199,7 +199,8 @@ h1, h2, h3, h4, h5,
   background-repeat: no-repeat;
   background-attachment: fixed; }
   .bg-image.overlay {
-    position: relative; }
+    position: relative;
+    background-image: url("../images/bg-masthead.jpg"); }
     .bg-image.overlay:after {
       position: absolute;
       content: "";
@@ -544,9 +545,11 @@ h1, h2, h3, h4, h5,
   background-size: cover;
   background-repeat: no-repeat;
   background-position: top;
-  background-position: center center; }
+  background-position: center center;
+}
   .site-blocks-cover.overlay {
-    position: relative; }
+    position: relative; 
+    background-image: url("../images/bg-masthead.jpg"); }
     .site-blocks-cover.overlay:before {
       position: absolute;
       content: "";
@@ -554,7 +557,7 @@ h1, h2, h3, h4, h5,
       bottom: 0;
       right: 0;
       top: 0;
-      background: rgba(0, 0, 0, 0.4); }
+      background: rgba(0, 0, 0, 0.4);}
   .site-blocks-cover .player {
     position: absolute;
     bottom: -250px;

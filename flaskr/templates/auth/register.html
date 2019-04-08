@@ -38,7 +38,7 @@
 
 
 
-    <form action = "http://localhost:5000/auth/register" method = post>
+    <form action = "{{ url_for('auth.register') }}" method = post>
          <fieldset>
             
             {{ form.hidden_tag() }}
