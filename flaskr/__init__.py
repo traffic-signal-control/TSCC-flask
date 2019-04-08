@@ -6,9 +6,9 @@ from flask_talisman import Talisman
 csp = {
     'default-src': ['\'self\'','*.mailsite.com','*.googleapis.com','*.bootcss.com'],
     'img-src': '*',
-    'script-src': ['\'self\'','*.bootcss.com'],
-    'style-src': ['\'self\'','*.googleapis.com','*.bootcss.com','nonce-...'],
-    'font-src': ['\'self\'','data:', 'fonts.gstatic.com']
+    'script-src': ['\'self\'', '\'unsafe-inline\'','\'unsafe-eval\'','*.bootcss.com','*.mathjax.org'],
+    'style-src': ['\'self\'','\'unsafe-inline\'','*.googleapis.com','*.bootcss.com'],
+    'font-src': ['\'self\'','data:','about:', 'fonts.gstatic.com']
 }
 
 def create_app(test_config=None):
@@ -18,7 +18,7 @@ def create_app(test_config=None):
         SECRET_KEY=os.urandom(24),
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
-    Talisman(app,content_security_policy=csp,content_security_policy_nonce_in=['script-src','style-src','img-src','font-src'])
+    Talisman(app,content_security_policy=csp) #,content_security_policy_nonce_in=['script-src','style-src','img-src','font-src'])
     app.config.update(PERMANENT_SESSION_LIFETIME=600)
     app.config['MAIL_SERVER'] = 'smtp.live.com'
     app.config['MAIL_PORT'] = 25

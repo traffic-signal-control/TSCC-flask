@@ -113,7 +113,7 @@ def get_info():
     :raise 403: if the current user isn't the author
     """
     post = get_db().execute(
-        'SELECT username, email'
+        'SELECT username, id, email'
         ' FROM user u WHERE u.id = ?',
         (g.user['id'],)
     ).fetchone()

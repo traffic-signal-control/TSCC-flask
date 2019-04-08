@@ -7,7 +7,8 @@
 
 {% block header %}
     <h3>Personal Info</h3>
-    <li>user_id: {{ returned_info['username'] }}</li>
+    <li>user_name: {{ returned_info['username'] }}</li>
+    <li>user_id: {{ returned_info['id'] }}</li>
     <li>Password: {{ returned_info['email'] }}</li>
 {% endblock %}
 

@@ -36,7 +36,13 @@ def all():
         user_result_one['username'] = username
         submission_result.append(user_result_one)
 
+    if len(submission_result) ==0:
+        user_result_one = get_user_result(g.user['id'])
+        user_result_one['username'] = None
+        submission_result.append(user_result_one)
+
     submission_result = pd.DataFrame(submission_result)
+
     submission_result.sort_values(by='final_result', ascending=False, inplace=True)
     submission_result = submission_result.to_dict('records')
 

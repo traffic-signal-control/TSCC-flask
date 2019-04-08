@@ -77,9 +77,9 @@ def register():
             username = form.name.data
             password = form.password.data
             email = form.email.data
-            print(username, file=sys.stderr)
-            print(password, file=sys.stderr)
-            print(email, file=sys.stderr)
+            # print(username, file=sys.stderr)
+            # print(password, file=sys.stderr)
+            # print(email, file=sys.stderr)
             send_mail(email, "aaaaaaaaaaa")
             db.execute(
                 'INSERT INTO user (username, password, email, code) VALUES (?, ?, ?, ?)',
