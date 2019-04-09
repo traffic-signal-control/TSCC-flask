@@ -44,6 +44,10 @@
 <!--             <legend>Register Form</legend> -->
             {{ form.hidden_tag() }}
             <div style = font-size:20px; font-weight:bold; margin-left:150px;>
+              
+              {{ form.email.label }}
+               {{ form.email }}
+               <br>
               {{ form.validate_code.label }}
                {{ form.validate_code }}
               {{ form.submit2 }}
