@@ -10,7 +10,7 @@ touch /var/hua_home/workspace/log/eval_print.log
 pwd
 ls -l
 
-exec flask init-db
+# exec flask init-db
 
 cd /var/hua_home/workspace/evaluate/
 
