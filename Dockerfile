@@ -9,7 +9,7 @@ ADD gunicorn.conf.py /var/hua_home/workspace/
 ADD requirements.txt /var/hua_home/workspace/
 
 
-RUN pip install flask gunicorn gevent Flask-Mail Flask-WTF
+RUN pip install flask gunicorn gevent Flask-Mail Flask-WTF flask_talisman
 
 
 

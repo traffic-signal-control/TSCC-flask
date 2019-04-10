@@ -24,5 +24,7 @@ exec gunicorn app:app \
         --workers 4 \
         --log-level debug \
         --access-logfile=/var/hua_home/workspace/log/access_print.log \
-        --error-logfile=/var/hua_home/workspace/log/error_print.log
+        --error-logfile=/var/hua_home/workspace/log/error_print.log  \
+        > /var/hua_home/workspace/log/output_print.log
+
 exec "$@"
