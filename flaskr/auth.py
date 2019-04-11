@@ -81,7 +81,6 @@ def send_mail(to, subject, **kwargs):
     # t.join()
     # return t.exitcode
 
-
 class UserForm(FlaskForm):
     email = StringField('Email',[validators.Email("Please enter your email address.")])
     name = StringField('Username',[validators.DataRequired("Please enter your user name")])
@@ -160,7 +159,6 @@ def register():
             print(form.submit1.data,file=sys.stderr)
             print(form.validate_on_submit(),file=sys.stderr)
             print(form.errors,file=sys.stderr)
-            flash("form.submit1.data and form.validate_on_submit()")
             render_template('auth/register.html', form=form)
         # if form2.submit2.data and form2.validate_on_submit():
 
@@ -196,45 +194,12 @@ def activate():
 
     return render_template('auth/activate.html', form=form)
 
-
-
-# @bp.route('/register', methods=('GET', 'POST'))
-# def register():
-#     if request.method == 'POST':
-#         username = request.form['username']
-#         password = request.form['password']
-#         db = get_db()
-#         error = None
-
-#         if not username:
-#             error = 'Username is required.'
-#         elif not password:
-#             error = 'Password is required.'
-#         elif db.execute(
-#             'SELECT id FROM user WHERE username = ?', (username,)
-#         ).fetchone() is not None:
-#             error = 'User {} is already registered.'.format(username)
-
-#         if error is None:
-#             db.execute(
-#                 'INSERT INTO user (username, password) VALUES (?, ?)',
-#                 (username, generate_password_hash(password))
-#             )
-#             db.commit()
-#             return redirect(url_for('auth.login'))
-
-#         flash(error)
-
-#     return render_template('auth/register.html')
-
-
-
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     form = LoginForm()
     if request.method == 'POST':
-        if form.submit1.data and form.validate_on_submit():
-            username = form.username.data
+        if form.submit.data and form.validate_on_submit():
+            username = form.name.data
             password = form.password.data
             db = get_db()
             error = None
@@ -250,6 +215,7 @@ def login():
                 session.clear()
                 session['user_id'] = user['id']
                 session.permanent = True
+                print("NO ERROR", file=sys.stderr)
                 return redirect(url_for('index'))
 
             flash(error)
@@ -260,7 +226,7 @@ def login():
             flash("form.submit.data and form.validate_on_submit()")
             render_template('auth/login.html', form=form)
 
-    return render_template('auth/login.html')
+    return render_template('auth/login.html', form=form)
 
 
 @bp.before_app_request

@@ -14,7 +14,7 @@ ls -l
 
 cd ./evaluate/
 
-exec python eval.py > ../log/eval_print.log &
+# exec python eval.py > ../log/eval_print.log &
 
 cd ..
 

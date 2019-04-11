@@ -3,6 +3,9 @@ from flask import (
 )
 from werkzeug.exceptions import abort
 
+from wtforms import StringField, SubmitField, PasswordField, SelectField
+from flask_wtf.file import FileField, FileRequired, FileAllowed
+from flask_wtf import Form
 from flaskr.auth import login_required, activate_required
 from flaskr.db import get_db
 from flaskr import config
@@ -54,48 +57,69 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+
+class UploadForm(Form):
+    dataset = SelectField(label='Dataset', choices = [('default', '--'),
+                                                      ('scenario_1', 'scenario_1'),
+                                                      ('scenario_2', 'scenario_2'),
+                                                      ('scenario_3', 'scenario_3'),
+                                                      ('scenario_4', 'scenario_4'),
+                                                      ('scenario_5', 'scenario_5'),
+                                                      ])
+    file = FileField(validators=[FileAllowed(ALLOWED_EXTENSIONS, u'Only .txt file is supported!'), FileRequired(u'Please select a ".txt" file.')])
+    submit = SubmitField(u'Submit')
+
 @bp.route('/submit', methods=('GET', 'POST'))
 @activate_required
 def create():
     """Create a new submission for the current user."""
+    form = UploadForm()
     if request.method == 'POST':
-        dataset = request.form['dataset']
-        file = request.files['file']
-        error = None
+        dataset = form.dataset.data
+        file = form.file.data
 
-        print(dataset, file=sys.stderr)
-        print(file.filename)
-        dataset_name = None
-        if dataset == 'default':
-            error = 'Please select one dataset'
-        elif dataset in dataset_dict:
-            dataset_name = dataset_dict[dataset]
+        if form.validate_on_submit():
+            error = None
+
+            print(dataset, file=sys.stderr)
+            print(file.filename)
+            dataset_name = None
+            if dataset == 'default':
+                error = 'Please select one dataset'
+            elif dataset in dataset_dict:
+                dataset_name = dataset_dict[dataset]
+            else:
+                error = 'Please select one dataset'
+
+            _time = time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime(time.time()))
+            filename = None
+            if file and allowed_file(file.filename):
+                filename = "signal_plan-"+str(g.user['id']) + "-%s"%_time  + "-%s.txt"%dataset_name
+                if not os.path.exists(UPLOAD_FOLDER):
+                    os.makedirs(UPLOAD_FOLDER)
+                file.save(os.path.join(UPLOAD_FOLDER, filename))
+            else:
+                error = 'Signal plan is required and the file name must have a ".txt" extension'
+
+            if error is not None:
+                flash(error)
+            else:
+                db = get_db()
+                db.execute(
+                    'INSERT INTO submission (user_id, dataset, file_name)'
+                    ' VALUES (?,?, ?)',
+                    (g.user['id'], dataset_name, filename)
+                )
+                db.commit()
+                return redirect(url_for('team_info.all'))
         else:
-            error = 'Please select one dataset'
+            print(form.submit.data,file=sys.stderr)
+            print(form.validate_on_submit(),file=sys.stderr)
+            print(form.errors,file=sys.stderr)
+            flash("form.validate_on_submit()")
+            render_template('team_info/submit.html', form=form)
 
-        _time = time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime(time.time()))
-        filename = None
-        if file and allowed_file(file.filename):
-            filename = "signal_plan-"+str(g.user['id']) + "-%s"%_time  + "-%s.txt"%dataset_name
-            if not os.path.exists(UPLOAD_FOLDER):
-                os.makedirs(UPLOAD_FOLDER)
-            file.save(os.path.join(UPLOAD_FOLDER, filename))
-        else:
-            error = 'Signal plan is required and the file name must have a ".txt" extension'
-
-        if error is not None:
-            flash(error)
-        else:
-            db = get_db()
-            db.execute(
-                'INSERT INTO submission (user_id, dataset, file_name)'
-                ' VALUES (?,?, ?)',
-                (g.user['id'], dataset_name, filename)
-            )
-            db.commit()
-            return redirect(url_for('team_info.all'))
-
-    return render_template('team_info/submit.html')
+    return render_template('team_info/submit.html', form=form)
 
 
 @bp.route('/get_info', methods=('GET', 'POST'))

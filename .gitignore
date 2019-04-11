@@ -12,7 +12,7 @@ htmlcov/
 test_*
 
 log/*
-
+evaluate/submitted/*
 dist/
 build/
 *.egg-info/
