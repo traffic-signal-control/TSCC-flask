@@ -85,7 +85,7 @@ def send_mail(to, subject, **kwargs):
 class UserForm(FlaskForm):
     email = StringField('Email',[validators.Email("Please enter your email address.")])
     name = StringField('Username',[validators.DataRequired("Please enter your user name")])
-    password = PasswordField('Password',validators=[validators.DataRequired()])
+    password = PasswordField('Password')
 
     submit1 = SubmitField('Send Email')
 
@@ -157,6 +157,7 @@ def register():
         else:
             print(form.submit1.data,file=sys.stderr)
             print(form.validate_on_submit(),file=sys.stderr)
+            print(form.errors)
             flash("form.submit1.data and form.validate_on_submit()")
             render_template('auth/register.html', form=form)
         # if form2.submit2.data and form2.validate_on_submit():
