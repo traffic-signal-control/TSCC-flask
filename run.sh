@@ -3,28 +3,28 @@
 set -e
 pwd
 # 日志文件
-touch /var/hua_home/workspace/log/access_print.log
-touch /var/hua_home/workspace/log/error_print.log
-touch /var/hua_home/workspace/log/output_print.log
-touch /var/hua_home/workspace/log/eval_print.log
+touch ./log/access_print.log
+touch ./log/error_print.log
+touch ./log/output_print.log
+touch ./log/eval_print.log
 pwd
 ls -l
 
 # exec flask init-db
 
-cd /var/hua_home/workspace/evaluate/
+cd ./evaluate/
 
-exec python eval.py > /var/hua_home/workspace/log/eval_print.log &
+exec python eval.py > ../log/eval_print.log &
 
-cd /var/hua_home/workspace/
+cd ..
 
 exec gunicorn app:app \
-        -c /var/hua_home/workspace/gunicorn.conf.py \
+        -c ./gunicorn.conf.py \
         --bind 0.0.0.0:8000 \
         --workers 4 \
         --log-level debug \
-        --access-logfile=/var/hua_home/workspace/log/access_print.log \
-        --error-logfile=/var/hua_home/workspace/log/error_print.log  \
-        > /var/hua_home/workspace/log/output_print.log
+        --access-logfile=log/access_print.log \
+        --error-logfile=log/error_print.log  \
+        > log/output_print.log
 
 exec "$@"
