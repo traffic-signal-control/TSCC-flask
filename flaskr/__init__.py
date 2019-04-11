@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, render_template
 from flask_talisman import Talisman
-from flask_wtf.csrf import CsrfProtect
+from flask_wtf.csrf import CSRFProtect
 
 csp = {
     'default-src': ['\'self\'','*.mailsite.com','*.googleapis.com','*.bootcss.com'],
@@ -15,7 +15,7 @@ csp = {
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    csrf = CsrfProtect()
+    csrf = CSRFProtect()
 
     app.config.from_mapping(
         SECRET_KEY=os.urandom(24),
