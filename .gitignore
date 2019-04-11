@@ -11,6 +11,8 @@ htmlcov/
 
 test_*
 
+log/*
+
 dist/
 build/
 *.egg-info/
