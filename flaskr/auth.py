@@ -153,6 +153,10 @@ def register():
                 return redirect(url_for('auth.activate'))
 
             flash(error)
+            render_template('auth/register.html', form=form)
+        else:
+            flash("form.submit1.data and form.validate_on_submit()")
+            render_template('auth/register.html', form=form)
         # if form2.submit2.data and form2.validate_on_submit():
 
         #     # print(form2.email.data, file=sys.stderr)
