@@ -157,7 +157,7 @@ def register():
         else:
             print(form.submit1.data,file=sys.stderr)
             print(form.validate_on_submit(),file=sys.stderr)
-            print(form.errors)
+            print(form.errors,file=sys.stderr)
             flash("form.submit1.data and form.validate_on_submit()")
             render_template('auth/register.html', form=form)
         # if form2.submit2.data and form2.validate_on_submit():
