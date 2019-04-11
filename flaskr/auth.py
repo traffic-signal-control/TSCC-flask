@@ -85,7 +85,7 @@ def send_mail(to, subject, **kwargs):
 class UserForm(FlaskForm):
     email = StringField('Email',[validators.Email("Please enter your email address.")])
     name = StringField('Username',[validators.DataRequired("Please enter your user name")])
-    password = PasswordField('Password')
+    password = PasswordField('Password',validators=[validators.DataRequired()])
 
     submit1 = SubmitField('Send Email')
 
