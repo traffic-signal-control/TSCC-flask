@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, render_template
 from flask_talisman import Talisman
+from flask_wtf.csrf import CsrfProtect
 
 csp = {
     'default-src': ['\'self\'','*.mailsite.com','*.googleapis.com','*.bootcss.com'],
@@ -14,11 +15,15 @@ csp = {
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    csrf = CsrfProtect()
+
     app.config.from_mapping(
         SECRET_KEY=os.urandom(24),
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
     Talisman(app,content_security_policy=csp) #,content_security_policy_nonce_in=['script-src','style-src','img-src','font-src'])
+    csrf.init_app(app)
+
     app.config.update(PERMANENT_SESSION_LIFETIME=600)
     app.config['MAIL_SERVER'] = 'smtp.live.com'
     app.config['MAIL_PORT'] = 25
