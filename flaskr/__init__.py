@@ -25,6 +25,8 @@ def create_app(test_config=None):
     csrf.init_app(app)
 
     app.config.update(PERMANENT_SESSION_LIFETIME=600)
+    app.config.update(WTF_CSRF_ENABLED=False)
+
     app.config['MAIL_SERVER'] = 'smtp.live.com'
     app.config['MAIL_PORT'] = 25
     app.config['MAIL_USE_SSL'] = False

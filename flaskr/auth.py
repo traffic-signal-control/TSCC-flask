@@ -170,10 +170,16 @@ def register():
 
     return render_template('auth/register.html', form=form)
 
+
 @bp.route('/activate', methods=('GET', 'POST'))
 def activate():
     form = CodeForm()
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect(url_for('auth.login'))
+
     if request.method == 'POST':
+        print("AAAAAAAA", file=sys.stderr)
         if form.submit2.data and form.validate_on_submit():
             db = get_db()
             # username = session['name']
@@ -185,19 +191,36 @@ def activate():
             'SELECT * FROM user WHERE email = ?', (email,)
         ).fetchone()
             error = None
+            print(user, file=sys.stderr)
             if not user["code"] == code:
                 error = 'Incorrect verification code.'
             if error is None:
-                return redirect(url_for('auth.login'))
+                update_error = db.execute(
+                    'UPDATE user SET code = 1 WHERE email = ? AND id = ?', (email,user_id)
+                )
+                if update_error is None:
+                    redirect(url_for('team_info.all'))
+                else:
+                    error = update_error
+                    flash(error)
+                    return redirect(url_for('auth.login'))
 
             flash(error)
+        else:
+            print(form.submit2.data,file=sys.stderr)
+            print(form.validate_on_submit(),file=sys.stderr)
+            print(form.errors, file=sys.stderr)
+            flash("form.submit2.data and form.validate_on_submit()")
 
     return render_template('auth/activate.html', form=form)
+
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     form = LoginForm()
+    print("AAAAAAAA", file=sys.stderr)
     if request.method == 'POST':
+        print("POST", file=sys.stderr)
         if form.submit.data and form.validate_on_submit():
             username = form.name.data
             password = form.password.data
@@ -216,15 +239,14 @@ def login():
                 session['user_id'] = user['id']
                 session.permanent = True
                 print("NO ERROR", file=sys.stderr)
-                return redirect(url_for('index'))
-
+                return redirect(url_for('team_info.all'))
+            print("POST!!!", file=sys.stderr)
             flash(error)
         else:
             print(form.submit.data,file=sys.stderr)
             print(form.validate_on_submit(),file=sys.stderr)
             print(form.errors, file=sys.stderr)
             flash("form.submit.data and form.validate_on_submit()")
-            render_template('auth/login.html', form=form)
 
     return render_template('auth/login.html', form=form)
 
@@ -258,7 +280,9 @@ def login_required(view):
 def activate_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if g.user is None or g.user['activate']!=0:
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        elif g.user['activate']!=0:
             return redirect(url_for('auth.activate'))
 
         return view(**kwargs)

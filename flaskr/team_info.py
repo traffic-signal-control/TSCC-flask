@@ -116,7 +116,6 @@ def create():
             print(form.submit.data,file=sys.stderr)
             print(form.validate_on_submit(),file=sys.stderr)
             print(form.errors,file=sys.stderr)
-            flash("form.validate_on_submit()")
             render_template('team_info/submit.html', form=form)
 
     return render_template('team_info/submit.html', form=form)
