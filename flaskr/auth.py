@@ -89,6 +89,11 @@ class UserForm(FlaskForm):
 
     submit1 = SubmitField('Send Email')
 
+class LoginForm(FlaskForm):
+    name = StringField('Username',[validators.DataRequired("Please enter your user name")])
+    password = PasswordField('Password', [validators.DataRequired("Please enter your password")])
+    submit = SubmitField('Log In')
+
 
 class CodeForm(FlaskForm):
     email = StringField('Email',[validators.Email("Please enter your email address.")])
@@ -112,10 +117,7 @@ class UploadForm(FlaskForm):
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
-
     form = UserForm()
-    
-
     if request.method == 'POST':
         db = get_db()
         if form.submit1.data and form.validate_on_submit():
@@ -229,29 +231,37 @@ def activate():
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
+    form = LoginForm()
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        db = get_db()
-        error = None
-        user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
-        ).fetchone()
+        if form.submit1.data and form.validate_on_submit():
+            username = form.username.data
+            password = form.password.data
+            db = get_db()
+            error = None
+            user = db.execute(
+                'SELECT * FROM user WHERE username = ?', (username,)
+                ).fetchone()
+            if user is None:
+                error = 'Incorrect username.'
+            elif not check_password_hash(user['password'], password):
+                error = 'Incorrect password.'
 
-        if user is None:
-            error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+            if error is None:
+                session.clear()
+                session['user_id'] = user['id']
+                session.permanent = True
+                return redirect(url_for('index'))
 
-        if error is None:
-            session.clear()
-            session['user_id'] = user['id']
-            session.permanent = True
-            return redirect(url_for('index'))
-
-        flash(error)
+            flash(error)
+        else:
+            print(form.submit.data,file=sys.stderr)
+            print(form.validate_on_submit(),file=sys.stderr)
+            print(form.errors, file=sys.stderr)
+            flash("form.submit.data and form.validate_on_submit()")
+            render_template('auth/login.html', form=form)
 
     return render_template('auth/login.html')
+
 
 @bp.before_app_request
 def load_logged_in_user():
