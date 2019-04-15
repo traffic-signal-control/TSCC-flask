@@ -289,7 +289,7 @@ def activate_required(view):
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for('auth.login'))
-        elif g.user['activate']!=0:
+        elif g.user['activate']==0:
             return redirect(url_for('auth.activate'))
 
         return view(**kwargs)
