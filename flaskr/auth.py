@@ -174,9 +174,9 @@ def register():
 @bp.route('/activate', methods=('GET', 'POST'))
 def activate():
     form = CodeForm()
-    user_id = session.get('user_id')
-    if user_id is None:
-        return redirect(url_for('auth.login'))
+    # user_id = session.get('user_id')
+    # if user_id is None:
+    #     return redirect(url_for('auth.login'))
 
     if request.method == 'POST':
         print("AAAAAAAA", file=sys.stderr)
@@ -195,15 +195,22 @@ def activate():
             if not user["code"] == code:
                 error = 'Incorrect verification code.'
             if error is None:
-                update_error = db.execute(
-                    'UPDATE user SET code = 1 WHERE email = ? AND id = ?', (email,user_id)
-                )
-                if update_error is None:
-                    redirect(url_for('team_info.all'))
-                else:
-                    error = update_error
-                    flash(error)
-                    return redirect(url_for('auth.login'))
+                print("no error", file=sys.stderr)
+                # update_error = None
+                # db.execute(
+                #     'UPDATE user SET activate = 1 WHERE email = ?', (email,)
+                # )
+                # if update_error is None:
+                #     redirect(url_for('team_info.all'))
+                # else:
+                #     error = update_error
+                #     flash(error)
+                c = db.cursor()
+                c.execute(
+                    'UPDATE user SET activate = 1 WHERE email = ?', (email,)
+                    )
+                db.commit()
+                return redirect(url_for('auth.login'))
 
             flash(error)
         else:
