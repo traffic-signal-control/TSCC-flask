@@ -16,8 +16,7 @@
     <h3>Submission History</h3>
     <div class="table-responsive" data-example-id="simple-table" style="overflow:scroll;">
             <table class="table">
-{#              <caption>All methods are measured in <a href="https://traffic-signal-control.github.io/TSCC2019/evaluation.html"> Average Travel Time</a> (in seconds).</caption>#}
-              <thead>
+                <thead>
                 <tr>
                   <th>#</th>
                   <th>Username</th>
@@ -37,7 +36,7 @@
                   <td> {{ submission['scenario'] }}</td>
                   <td> {{ submission['result'] }}</td>
                 </tr>
-                  {% if not loop.last %}
+                  {% if loop.last %}
                       <hr>
                   {% endif %}
               {% endfor %}
