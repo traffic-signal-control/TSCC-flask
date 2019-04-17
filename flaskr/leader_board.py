@@ -18,7 +18,6 @@ user_result_dict = deepcopy(config.user_result)
 
 
 @bp.route('/')
-@login_required
 def all():
     """Show all the posts, most recent first."""
     db = get_db()
