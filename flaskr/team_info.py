@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, send_from_directory
 )
 from werkzeug.exceptions import abort
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 
 from wtforms import StringField, SubmitField, PasswordField, SelectField
 from flask_wtf.file import FileField, FileRequired, FileAllowed
@@ -14,6 +14,7 @@ import sys
 import os
 import time
 import pandas as pd
+import shutil
 
 bp = Blueprint('team_info', __name__, url_prefix='/team_info')
 
@@ -179,6 +180,7 @@ def create():
             _time = time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime(time.time()))
             filename = None
             if file and allowed_file(file.filename):
+
                 # limit submission time
                 db = get_db()
                 submissions = db.execute(
@@ -195,14 +197,20 @@ def create():
                 if len(submission_result) >= 10:
                     error = "Submission over 10 times during past 24 hours"
                 else:
+                    filename = secure_filename(file.filename)
                     filename = "signal_plan-"+str(g.user['id']) + "-%s"%_time  + "-%s.txt"%dataset_name
                     if not os.path.exists(UPLOAD_FOLDER):
                         os.makedirs(UPLOAD_FOLDER)
-                    file.save(os.path.join(UPLOAD_FOLDER, filename))
 
-                    flag, error_info = check_upload_file(os.path.join(UPLOAD_FOLDER, filename), num_step)
+                    file_tmp_path = os.path.join(UPLOAD_FOLDER.split("/")[0], filename)
+                    file.save(file_tmp_path)
+
+                    flag, error_info = check_upload_file(file_tmp_path, num_step)
                     if not flag:
                         error = 'File uploaded is invalid.\n' + error_info
+                        os.remove(file_tmp_path)
+                    else:
+                        shutil.move(file_tmp_path, os.path.join(UPLOAD_FOLDER, filename))
             else:
                 error = 'Signal plan is required and the file name must have a ".txt" extension'
 
