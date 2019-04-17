@@ -53,9 +53,6 @@ def all():
 
         submission_result_list.append(submission_result)
 
-        # maintain the submission result
-    g.submission_result = submission_result
-
     info = get_info()
     return render_template('team_info/index.html', submissions=enumerate(submission_result_list), returned_info=info)
 
