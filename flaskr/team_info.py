@@ -191,8 +191,8 @@ def create():
                 submission_result = pd.DataFrame(submissions)
                 # submission_result.columns = ['result', 'submission_time']
                 # if len(submission_result[submission_result['result'].notnull()]) > 10:
-                if len(submission_result) >= 10:
-                    error = "Submission over 10 times during past 24 hours"
+                if len(submission_result) >= 5: # 5 time a day
+                    error = "Submission over 5 times during past 24 hours"
                 else:
                     filename = secure_filename(file.filename)
                     filename = "signal_plan-"+str(g.user['id']) + "-%s"%_time  + "-%s.txt"%dataset_name
