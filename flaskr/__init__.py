@@ -106,7 +106,7 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
 
     from . import team_info
-    limiter.limit("40/hour")(team_info.bp)
+    limiter.limit("10/minute")(team_info.bp)
     app.register_blueprint(team_info.bp)
 
     from . import leader_board

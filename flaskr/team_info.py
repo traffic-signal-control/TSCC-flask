@@ -52,6 +52,9 @@ def all():
 
         submission_result_list.append(submission_result)
 
+        # maintain the submission result
+    g.submission_result = submission_result
+
     info = get_info()
     return render_template('team_info/index.html', submissions=enumerate(submission_result_list), returned_info=info)
 
@@ -176,25 +179,39 @@ def create():
             _time = time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime(time.time()))
             filename = None
             if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                filename = "signal_plan-"+str(g.user['id']) + "-%s"%_time  + "-%s.txt"%dataset_name
-                if not os.path.exists(UPLOAD_FOLDER):
-                    os.makedirs(UPLOAD_FOLDER)
-                file.save(os.path.join(UPLOAD_FOLDER, filename))
+                # limit submission time
+                db = get_db()
+                submissions = db.execute(
+                    'SELECT result, created'
+                    ' FROM submission sb'
+                    ' JOIN user u'
+                    ' ON sb.user_id = u.id AND sb.user_id = ? AND created > datetime("now","-1 day")'
+                    ' ORDER BY created DESC',
+                    (g.user['id'],)
+                ).fetchall()
+                submission_result = pd.DataFrame(submissions)
+                submission_result.columns = ['result', 'submission_time']
+                # if len(submission_result[submission_result['result'].notnull()]) > 10:
+                if len(submission_result) >= 10:
+                    error = "Submission over 10 times during past 24 hours"
+                else:
+                    filename = "signal_plan-"+str(g.user['id']) + "-%s"%_time  + "-%s.txt"%dataset_name
+                    if not os.path.exists(UPLOAD_FOLDER):
+                        os.makedirs(UPLOAD_FOLDER)
+                    file.save(os.path.join(UPLOAD_FOLDER, filename))
 
-                flag, error_info = check_upload_file(os.path.join(UPLOAD_FOLDER, filename), num_step)
-                if not flag:
-                    error = 'File uploaded is invalid.\n' + error_info
+                    flag, error_info = check_upload_file(os.path.join(UPLOAD_FOLDER, filename), num_step)
+                    if not flag:
+                        error = 'File uploaded is invalid.\n' + error_info
             else:
                 error = 'Signal plan is required and the file name must have a ".txt" extension'
 
             if error is not None:
                 flash(error)
             else:
-                db = get_db()
                 db.execute(
                     'INSERT INTO submission (user_id, dataset, file_name)'
-                    ' VALUES (?,?, ?)',
+                    ' VALUES (?, ?, ?)',
                     (g.user['id'], dataset_name, filename)
                 )
                 db.commit()
