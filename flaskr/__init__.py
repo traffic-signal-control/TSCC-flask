@@ -1,8 +1,10 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, make_response, jsonify
 from flask_talisman import Talisman
 from flask_wtf.csrf import CSRFProtect
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 csp = {
     'default-src': ['\'self\'','*.mailsite.com','*.googleapis.com','*.bootcss.com'],
@@ -24,6 +26,7 @@ def create_app(test_config=None):
     Talisman(app,content_security_policy=csp) #,content_security_policy_nonce_in=['script-src','style-src','img-src','font-src'])
     csrf.init_app(app)
 
+
     app.config.update(PERMANENT_SESSION_LIFETIME=600)
     app.config.update(WTF_CSRF_ENABLED=False)
 
@@ -34,6 +37,7 @@ def create_app(test_config=None):
     app.config['MAIL_USERNAME'] = 'trafficsignalcontrol@hotmail.com'
     app.config['MAIL_PASSWORD'] = 'tsc123456'
     app.config['MAIL_DEBUG'] = True
+
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -85,13 +89,24 @@ def create_app(test_config=None):
     def submission_guidelines():
         return render_template('submission_guidelines.html')
 
+    @app.errorhandler(429)
+    def ratelimit_handler(e):
+        return make_response(
+                jsonify(error="ratelimit exceeded %s" % e.description)
+                , 429
+        )
+
+    limiter = Limiter(app, default_limits = ["2/hour"], key_func=get_remote_address)
+
     from . import db 
     db.init_app(app)
 
     from . import auth
+    limiter.limit("40/hour")(auth.bp)
     app.register_blueprint(auth.bp)
 
     from . import team_info
+    limiter.limit("40/hour")(team_info.bp)
     app.register_blueprint(team_info.bp)
 
     from . import leader_board
