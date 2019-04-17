@@ -189,7 +189,7 @@ def create():
                     (g.user['id'],)
                 ).fetchall()
                 submission_result = pd.DataFrame(submissions)
-                submission_result.columns = ['result', 'submission_time']
+                # submission_result.columns = ['result', 'submission_time']
                 # if len(submission_result[submission_result['result'].notnull()]) > 10:
                 if len(submission_result) >= 10:
                     error = "Submission over 10 times during past 24 hours"
