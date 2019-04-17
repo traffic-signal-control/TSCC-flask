@@ -46,6 +46,9 @@ def all():
     submission_result = submission_result.to_dict('records')
 
     info = get_user_result(g.user['id'])
+    print(dataset_dict, file=sys.stderr)
+    print(submission_result, file=sys.stderr)
+    print(info, file=sys.stderr)
     return render_template('leaderboard/index.html',
                            submissions=enumerate(submission_result),
                            returned_info=info,
