@@ -13,7 +13,6 @@
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>User id</th>
                     {% for dataset,result in returned_info['dataset_result'].items() %}
                         <th> {{ dataset }}</th>
                     {% endfor %}
@@ -24,7 +23,6 @@
 
                <tr>
                   <th scope="row">Your Score</th>
-                  <td> {{ returned_info['user_id'] }} </td>
 {#                  <td>  {{ submission['dataset_result'] }} </td>#}
                      {% for dataset,result in returned_info['dataset_result'].items() %}
                         <td>{{ result }}</td>
@@ -58,8 +56,8 @@
                   <th scope="row">{{  index+1 }}</th>
                   <td> {{ submission['username'] }} </td>
 {#                  <td>  {{ submission['dataset_result'] }} </td>#}
-                     {% for dataset,result in submission['dataset_result'].items() %}
-                        <td>{{ result }}</td>
+                     {% for index,dataset in dataset_dict.items() %}
+                        <td>{{ submission['dataset_result'][dataset] }}</td>
                     {% endfor %}
                   <td> {{ submission['final_result'] }}</td>
                 </tr>
