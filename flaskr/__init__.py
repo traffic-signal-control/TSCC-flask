@@ -96,7 +96,7 @@ def create_app(test_config=None):
                 , 429
         )
 
-    limiter = Limiter(app, default_limits = ["2/hour"], key_func=get_remote_address)
+    limiter = Limiter(app, default_limits = ["10/hour"], key_func=get_remote_address)
 
     from . import db 
     db.init_app(app)

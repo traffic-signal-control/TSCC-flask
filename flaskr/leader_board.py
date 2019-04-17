@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, session, request, url_for
 )
 from werkzeug.exceptions import abort
 
@@ -71,7 +71,7 @@ def get_user_result(user_id):
     db = get_db()
     for scen_index, scen_name in dataset_dict.items():
         submission = db.execute(
-            'SELECT sb.id, dataset, result, dataset, created'
+            'SELECT sb.id, dataset, result, created'
             ' FROM submission sb'
             ' WHERE sb.user_id = ? AND dataset = ?'
             ' ORDER BY result DESC',
@@ -81,7 +81,7 @@ def get_user_result(user_id):
         if submission is None:
             user_result['dataset_result'][scen_index] = None
         else:
-            user_result['dataset_result'][scen_index] = round(submission['result'], 4)
+            user_result['dataset_result'][scen_index] = round(submission['result'],4) if submission['result'] is not None else None
 
     user_result['final_result'] = get_final_score(user_result['dataset_result'])
 
@@ -100,6 +100,15 @@ def get_final_score(results):
     else:
         return 0
 
+@bp.before_app_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
 
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = get_db().execute(
+            'SELECT * FROM user WHERE id = ?', (user_id,)
+        ).fetchone()
 
 
