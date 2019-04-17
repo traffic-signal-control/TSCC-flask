@@ -14,6 +14,7 @@ import sys
 import os
 import time
 import pandas as pd
+import shutil
 
 bp = Blueprint('team_info', __name__, url_prefix='/team_info')
 
@@ -180,11 +181,17 @@ def create():
                 filename = "signal_plan-"+str(g.user['id']) + "-%s"%_time  + "-%s.txt"%dataset_name
                 if not os.path.exists(UPLOAD_FOLDER):
                     os.makedirs(UPLOAD_FOLDER)
-                file.save(os.path.join(UPLOAD_FOLDER, filename))
 
-                flag, error_info = check_upload_file(os.path.join(UPLOAD_FOLDER, filename), num_step)
+                file_tmp_path = os.path.join(UPLOAD_FOLDER.split("/")[0], filename)
+                file.save(file_tmp_path)
+
+                flag, error_info = check_upload_file(file_tmp_path, num_step)
                 if not flag:
                     error = 'File uploaded is invalid.\n' + error_info
+                    os.remove(file_tmp_path)
+                else:
+                    shutil.move(file_tmp_path, os.path.join(UPLOAD_FOLDER, filename))
+
             else:
                 error = 'Signal plan is required and the file name must have a ".txt" extension'
 
