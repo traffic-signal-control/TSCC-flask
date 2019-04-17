@@ -44,7 +44,6 @@
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>User id</th>
                   <th>Username</th>
                     {% for index,dataset in dataset_dict %}
                         <th> {{ dataset }}</th>
@@ -57,7 +56,6 @@
               {% for index,submission in submissions %}
                 <tr>
                   <th scope="row">{{  index+1 }}</th>
-                  <td> {{ submission['user_id'] }} </td>
                   <td> {{ submission['username'] }} </td>
 {#                  <td>  {{ submission['dataset_result'] }} </td>#}
                      {% for dataset,result in submission['dataset_result'].items() %}

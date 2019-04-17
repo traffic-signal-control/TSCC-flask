@@ -32,7 +32,7 @@
               {% for index,submission in submissions %}
                 <tr>
                   <th scope="row">{{  submission['index'] }}</th>
-                  <td> {{ submission['user_id'] }} </td>
+                  <td> {{ returned_info['username']}} </td>
                   <td>  {{ submission['created'].strftime('%Y-%m-%d %H:%M:%S') }} </td>
                   <td> {{ submission['scenario'] }}</td>
                   <td> {{ submission['result'] }}</td>
