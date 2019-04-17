@@ -43,7 +43,7 @@
                 <tr>
                   <th>#</th>
                   <th>Username</th>
-                    {% for index,dataset in dataset_dict %}
+                    {% for dataset in dataset_dict %}
                         <th> {{ dataset }}</th>
                     {% endfor %}
                   <th>Final Result</th>
@@ -51,17 +51,16 @@
               </thead>
               <tbody>
 
-              {% for index,submission in submissions %}
+              {% for index, submission in submissions %}
                 <tr>
                   <th scope="row">{{  index+1 }}</th>
                   <td> {{ submission['username'] }} </td>
-{#                  <td>  {{ submission['dataset_result'] }} </td>#}
-                     {% for index,dataset in dataset_dict.items() %}
-                        <td>{{ submission['dataset_result'][dataset] }}</td>
+                  {% for dataset_1 in dataset_dict %}
+                        <td> {{ submission['dataset_result'][dataset_1] }}</td>
                     {% endfor %}
                   <td> {{ submission['final_result'] }}</td>
                 </tr>
-                  {% if not loop.last %}
+                  {% if loop.last %}
                       <hr>
                   {% endif %}
               {% endfor %}

@@ -7,6 +7,7 @@ from flaskr.auth import login_required
 from flaskr.db import get_db
 from flaskr import config
 import sys
+
 from copy import deepcopy
 import pandas as pd
 
@@ -20,39 +21,43 @@ user_result_dict = deepcopy(config.user_result)
 @bp.route('/')
 def all():
     """Show all the posts, most recent first."""
-    db = get_db()
-    submissions = db.execute(
-        'SELECT DISTINCT sb.user_id, u.username'
-        ' FROM submission sb'
-        ' JOIN user u ON sb.user_id = u.id'
-    ).fetchall()
+    print(session.get('user_id'), file=sys.stderr)
+    if session.get('user_id') is None:
+        return redirect(url_for('auth.login'))
+    else:
+        db = get_db()
+        submissions = db.execute(
+            'SELECT DISTINCT sb.user_id, u.username'
+            ' FROM submission sb'
+            ' JOIN user u ON sb.user_id = u.id'
+        ).fetchall()
 
-    submission_result = []
-    for index, submission in enumerate(submissions):
-        user_id = submission['user_id']
-        username = submission['username']
-        user_result_one = get_user_result(user_id)
-        user_result_one['username'] = username
-        submission_result.append(user_result_one)
+        submission_result = []
+        for index, submission in enumerate(submissions):
+            user_id = submission['user_id']
+            username = submission['username']
+            user_result_one = get_user_result(user_id)
+            user_result_one['username'] = username
+            submission_result.append(user_result_one)
 
-    if len(submission_result) ==0:
-        user_result_one = get_user_result(g.user['id'])
-        user_result_one['username'] = None
-        submission_result.append(user_result_one)
+        if len(submission_result) ==0:
+            user_result_one = get_user_result(g.user['id'])
+            user_result_one['username'] = None
+            submission_result.append(user_result_one)
 
-    submission_result = pd.DataFrame(submission_result)
+        submission_result = pd.DataFrame(submission_result)
 
-    submission_result.sort_values(by='final_result', ascending=False, inplace=True)
-    submission_result = submission_result.to_dict('records')
+        submission_result.sort_values(by='final_result', ascending=False, inplace=True)
+        submission_result = submission_result.to_dict('records')
 
-    info = get_user_result(g.user['id'])
-    print(dataset_dict, file=sys.stderr)
-    print(submission_result, file=sys.stderr)
-    print(info, file=sys.stderr)
-    return render_template('leaderboard/index.html',
-                           submissions=enumerate(submission_result),
-                           returned_info=info,
-                           dataset_dict=enumerate(list(dataset_dict.keys())))
+        info = get_user_result(g.user['id'])
+        print(zip(dataset_dict.keys()), file=sys.stderr)
+        print(submission_result, file=sys.stderr)
+        print(info, file=sys.stderr)
+        return render_template('leaderboard/index.html',
+                               submissions=enumerate(submission_result),
+                               returned_info=info,
+                               dataset_dict=dataset_dict)
 
 
 def get_user_result(user_id):
