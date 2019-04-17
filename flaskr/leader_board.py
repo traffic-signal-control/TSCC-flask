@@ -81,7 +81,7 @@ def get_user_result(user_id):
         if submission is None:
             user_result['dataset_result'][scen_index] = None
         else:
-            user_result['dataset_result'][scen_index] = submission['result']
+            user_result['dataset_result'][scen_index] = round(submission['result'], 4)
 
     user_result['final_result'] = get_final_score(user_result['dataset_result'])
 
@@ -96,7 +96,7 @@ def get_final_score(results):
         else:
             result += r
     if len(results) > 0:
-        return result/len(results)
+        return round(result/len(results), 4)
     else:
         return 0
 

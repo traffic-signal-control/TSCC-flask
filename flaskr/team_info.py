@@ -46,7 +46,7 @@ def all():
         if submission['result'] is None:
             submission_result['result'] = "Calculating.."
         else:
-            submission_result['result'] = str(submission['result'])
+            submission_result['result'] = str(round(submission['result'], 4))
 
         submission_result['user_id'] = submission['user_id']
         submission_result['created'] = submission['created']
